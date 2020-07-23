@@ -15,4 +15,6 @@ wrappedModule['getCfd'] = function() {
   return cfdjsWasmJson;
 };
 
+wrappedModule['CfdError'] = cfdjsWasmJson.CfdError;
+
 module.exports = wrappedModule;
