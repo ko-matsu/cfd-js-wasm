@@ -193,7 +193,7 @@ const callJsonApi = async function(wasmModule, reqName, arg) {
   } catch (err) {
     console.log(err);
     throw new CfdError('ERROR: Invalid function call:' +
-      ` func=[${reqName}], args=[${args}]`, undefined, err);
+      ` func=[${reqName}], arg=[${arg}]`, undefined, err);
   }
 
   if (retObj.hasOwnProperty('error')) {
