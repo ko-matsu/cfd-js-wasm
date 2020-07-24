@@ -29,3 +29,10 @@ Module['onRuntimeInitialized'] = async function(){
     decoded.value = "WebAssembly load fail.";
   }
 }
+
+window.onload = function() {
+  if (Module['_cfdjsJsonApi']) {
+    const decoded = document.getElementById("decoded");
+    decoded.value = "";
+  }
+}

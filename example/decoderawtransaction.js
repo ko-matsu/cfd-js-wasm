@@ -54,9 +54,16 @@ Module['onRuntimeInitialized'] = async function(){
   const decoded = document.getElementById("decodedtx");
   if (Module['_cfdjsJsonApi']) {
     console.log("exist cfdjsJsonApi.");
-    decodedtx.value = "";
+    decoded.value = "";
   } else {
     console.log("cfdjsJsonApi not found!");
-    decodedtx.value = "WebAssembly load fail.";
+    decoded.value = "WebAssembly load fail.";
+  }
+}
+
+window.onload = function() {
+  if (Module['_cfdjsJsonApi']) {
+    const decoded = document.getElementById("decodedtx");
+    decoded.value = "";
   }
 }
