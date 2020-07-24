@@ -1,6 +1,3 @@
-const decodedField = document.getElementById("decodedtx");
-decodedField.value = "WebAssembly loading...";
-
 const updateField = async function(event) {
   const inputTx = document.getElementById("inputTx");
   const decodedtx = document.getElementById("decodedtx");
@@ -62,8 +59,10 @@ Module['onRuntimeInitialized'] = async function(){
 }
 
 window.onload = function() {
+  const decoded = document.getElementById("decodedtx");
   if (Module['_cfdjsJsonApi']) {
-    const decoded = document.getElementById("decodedtx");
     decoded.value = "";
+  } else {
+    decoded.value = "WebAssembly loading...";
   }
 }
