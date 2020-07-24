@@ -1,3 +1,6 @@
+const decodedField = document.getElementById("decodedtx");
+decodedField.value = "WebAssembly loading...";
+
 const updateField = async function(event) {
   const inputTx = document.getElementById("inputTx");
   const decodedtx = document.getElementById("decodedtx");
@@ -44,14 +47,16 @@ const updateField = async function(event) {
   }
 }
 
+const decodeBtnField = document.getElementById("execDecode");
+decodeBtnField.addEventListener('click', updateField);
+
 Module['onRuntimeInitialized'] = async function(){
+  const decoded = document.getElementById("decodedtx");
   if (Module['_cfdjsJsonApi']) {
-    const decodeBtn = document.getElementById("execDecode");
-    decodeBtn.addEventListener('click', updateField);
     console.log("exist cfdjsJsonApi.");
+    decodedtx.value = "";
   } else {
     console.log("cfdjsJsonApi not found!");
-    const decodedtx = document.getElementById("decodedtx");
     decodedtx.value = "WebAssembly load fail.";
   }
 }
