@@ -25,7 +25,7 @@ const main = async function() {
       }
     } catch (e) {
       console.warn(e);
-      exit(1);
+      process.exit(1);
     }
   });
 };
