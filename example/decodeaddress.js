@@ -33,6 +33,7 @@ const updateField = async function(event) {
     const resp = await callJsonApi(Module, 'GetAddressInfo', req);
     if (confidentialKey.length > 0) {
       resp['confidentialKey'] = confidentialKey;
+      resp['address'] = address;
     }
     decoded.value = JSON.stringify(resp, null, '  ');
   } catch (e) {
