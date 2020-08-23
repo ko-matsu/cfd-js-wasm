@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>ParseXpubkey</title>
+    <title>sha256 message hash</title>
     <style>
       #main {
         display: flex;
@@ -12,13 +12,16 @@
         height: 120vh;
         font-family: sans-serif;
       }
-      .decodeInput {
+      .decoderawtxInput {
+        width: 99%;
+      }
+      .input {
         width: 99%;
       }
       .decodeOutput {
         width: 99%;
       }
-      .decodetx-output {
+      .decode-output {
         vertical-align: top;
         margin-top: 13px;
       }
@@ -34,32 +37,26 @@
         margin-bottom: 0px;
         padding-bottom: 0px;
       }
-      .xpubkey-label {
-        font-size: 12px;
-        display: inline-block;
-        width: 8em;
-      }
     </style>
   </head>
   <body>
     <div class="decode">
-      <h3 class="decode-title">ParseXpubkey</h3>
+      <h3 class="decode-title">sha256 message hash</h3>
       <div class="decode-input">
         <div>
-          <div class="decode-label">Input xpub/xpriv:</div>
-          <textarea rows="3" id="inputData" class="decodeInput"></textarea><br>
-          <input type="button" name="decode" id="execDecode" value="Parse" />
+          text:<br>
+          <textarea rows="4" name="message" id="message" class="input"></textarea><br>
+
+          <input type="button" name="decode" id="execDecode" value="Hash" />
         </div>
         <div class="decode-output">
-          <div class="decode-label">Xpub/Xpriv Info:</div>
-          <textarea rows="14" id="decoded" class="decodeOutput" readonly></textarea>
+          <div class="decode-label">Result:</div>
+          <textarea rows="2" id="decoded" class="decodeOutput" readonly></textarea>
         </div>
       </div>
     </div>
 
-    <script src="/cfd-js-wasm/dist/cfdjs_wasm.js"></script>
-    <script src="/cfd-js-wasm/cfdjs_wasm_jsonapi.js"></script>
-    <script src="parseextkey.js"></script>
+    <script src="hash_sha256.js"></script>
     <p><a href="index.html">back</a></p>
-  </body>
+ </body>
 </html>

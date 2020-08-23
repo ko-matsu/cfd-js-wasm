@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>ParseXpubkey</title>
+    <title>Confidential Address</title>
     <style>
       #main {
         display: flex;
@@ -12,13 +12,16 @@
         height: 120vh;
         font-family: sans-serif;
       }
-      .decodeInput {
+      .decoderawtxInput {
+        width: 99%;
+      }
+      .input {
         width: 99%;
       }
       .decodeOutput {
         width: 99%;
       }
-      .decodetx-output {
+      .decode-output {
         vertical-align: top;
         margin-top: 13px;
       }
@@ -43,23 +46,27 @@
   </head>
   <body>
     <div class="decode">
-      <h3 class="decode-title">ParseXpubkey</h3>
+      <h3 class="decode-title">Create Address</h3>
       <div class="decode-input">
         <div>
-          <div class="decode-label">Input xpub/xpriv:</div>
-          <textarea rows="3" id="inputData" class="decodeInput"></textarea><br>
-          <input type="button" name="decode" id="execDecode" value="Parse" />
+
+          Address:<br>
+          <textarea rows="1" name="key" id="key" class="input"></textarea><br>
+          ConfidentialKey:<br>
+          <textarea rows="1" name="ctkey" id="ctkey" class="input"></textarea><br>
+
+          <input type="button" name="decode" id="execDecode" value="Create" />
         </div>
         <div class="decode-output">
-          <div class="decode-label">Xpub/Xpriv Info:</div>
-          <textarea rows="14" id="decoded" class="decodeOutput" readonly></textarea>
+          <div class="decode-label">Result:</div>
+          <textarea rows="7" id="decoded" class="decodeOutput" readonly></textarea>
         </div>
       </div>
     </div>
 
     <script src="/cfd-js-wasm/dist/cfdjs_wasm.js"></script>
     <script src="/cfd-js-wasm/cfdjs_wasm_jsonapi.js"></script>
-    <script src="parseextkey.js"></script>
+    <script src="confidentialaddress.js"></script>
     <p><a href="index.html">back</a></p>
-  </body>
+ </body>
 </html>
