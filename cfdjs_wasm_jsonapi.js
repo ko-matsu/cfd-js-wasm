@@ -177,7 +177,8 @@ const ccallCfd = async function(module, func, returnType, argTypes, args) {
   return ret;
 };
 
-const callJsonApi = async function(wasmModule, reqName, arg, hasThrowExcept = true) {
+const callJsonApi = async function(
+    wasmModule, reqName, arg, hasThrowExcept = true) {
   let retObj;
   try {
     // stringify all arguments
