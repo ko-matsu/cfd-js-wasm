@@ -1552,6 +1552,8 @@ export function addInitializedListener(func: () => Promise<void>): void;
 
 export function getCfd(): Cfdjs;
 
+export function hasLoadedWasm(): boolean;
+
 export class CfdError extends Error {
     constructor(message: string, errorInformation: InnerErrorResponse, cause: Error);
     toString(): string;

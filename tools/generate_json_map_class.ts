@@ -1457,6 +1457,10 @@ function convertFile() {
     name: 'getCfd',
     parameters: [],
     returnType: 'Cfdjs',
+  }, {
+    name: 'hasLoadedWasm',
+    parameters: [],
+    returnType: 'boolean',
   }];
   const insertErrorFunctions: TsAppendFunctionData[] = [{
     name: 'constructor',
