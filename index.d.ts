@@ -1836,6 +1836,16 @@ export class Cfdjs {
      */
     CreateDescriptor(jsonObject: CreateDescriptorRequest): Promise<CreateDescriptorResponse>;
     /**
+     * @param {CreateDestroyAmountRequest} jsonObject - request data.
+     * @return {Promise<CreateDestroyAmountResponse>} - response data.
+     */
+    CreateDestroyAmount(jsonObject: CreateDestroyAmountRequest): Promise<CreateDestroyAmountResponse>;
+    /**
+     * @param {CreateElementsSignatureHashRequest} jsonObject - request data.
+     * @return {Promise<CreateElementsSignatureHashResponse>} - response data.
+     */
+    CreateElementsSignatureHash(jsonObject: CreateElementsSignatureHashRequest): Promise<CreateElementsSignatureHashResponse>;
+    /**
      * @param {CreateExtkeyRequest} jsonObject - request data.
      * @return {Promise<CreateExtkeyResponse>} - response data.
      */
@@ -1871,15 +1881,45 @@ export class Cfdjs {
      */
     CreateKeyPair(jsonObject: CreateKeyPairRequest): Promise<CreateKeyPairResponse>;
     /**
+     * @param {CreateMultisigRequest} jsonObject - request data.
+     * @return {Promise<CreateMultisigResponse>} - response data.
+     */
+    CreateMultisig(jsonObject: CreateMultisigRequest): Promise<CreateMultisigResponse>;
+    /**
      * @param {CreateMultisigScriptSigRequest} jsonObject - request data.
      * @return {Promise<CreateMultisigScriptSigResponse>} - response data.
      */
     CreateMultisigScriptSig(jsonObject: CreateMultisigScriptSigRequest): Promise<CreateMultisigScriptSigResponse>;
     /**
+     * @param {CreatePegInAddressRequest} jsonObject - request data.
+     * @return {Promise<CreatePegInAddressResponse>} - response data.
+     */
+    CreatePegInAddress(jsonObject: CreatePegInAddressRequest): Promise<CreatePegInAddressResponse>;
+    /**
+     * @param {CreateRawPeginRequest} jsonObject - request data.
+     * @return {Promise<CreateRawPeginResponse>} - response data.
+     */
+    CreateRawPegin(jsonObject: CreateRawPeginRequest): Promise<CreateRawPeginResponse>;
+    /**
+     * @param {CreateRawPegoutRequest} jsonObject - request data.
+     * @return {Promise<CreateRawPegoutResponse>} - response data.
+     */
+    CreateRawPegout(jsonObject: CreateRawPegoutRequest): Promise<CreateRawPegoutResponse>;
+    /**
+     * @param {CreateRawTransactionRequest} jsonObject - request data.
+     * @return {Promise<CreateRawTransactionResponse>} - response data.
+     */
+    CreateRawTransaction(jsonObject: CreateRawTransactionRequest): Promise<CreateRawTransactionResponse>;
+    /**
      * @param {CreateScriptRequest} jsonObject - request data.
      * @return {Promise<CreateScriptResponse>} - response data.
      */
     CreateScript(jsonObject: CreateScriptRequest): Promise<CreateScriptResponse>;
+    /**
+     * @param {CreateSignatureHashRequest} jsonObject - request data.
+     * @return {Promise<CreateSignatureHashResponse>} - response data.
+     */
+    CreateSignatureHash(jsonObject: CreateSignatureHashRequest): Promise<CreateSignatureHashResponse>;
     /**
      * @param {DecodeBase58Request} jsonObject - request data.
      * @return {Promise<DecodeBase58Response>} - response data.
@@ -1901,26 +1941,6 @@ export class Cfdjs {
      */
     ElementsAddRawTransaction(jsonObject: ElementsAddRawTransactionRequest): Promise<ElementsAddRawTransactionResponse>;
     /**
-     * @param {CreateDestroyAmountRequest} jsonObject - request data.
-     * @return {Promise<CreateDestroyAmountResponse>} - response data.
-     */
-    CreateDestroyAmount(jsonObject: CreateDestroyAmountRequest): Promise<CreateDestroyAmountResponse>;
-    /**
-     * @param {CreatePegInAddressRequest} jsonObject - request data.
-     * @return {Promise<CreatePegInAddressResponse>} - response data.
-     */
-    CreatePegInAddress(jsonObject: CreatePegInAddressRequest): Promise<CreatePegInAddressResponse>;
-    /**
-     * @param {CreateRawPeginRequest} jsonObject - request data.
-     * @return {Promise<CreateRawPeginResponse>} - response data.
-     */
-    CreateRawPegin(jsonObject: CreateRawPeginRequest): Promise<CreateRawPeginResponse>;
-    /**
-     * @param {CreateRawPegoutRequest} jsonObject - request data.
-     * @return {Promise<CreateRawPegoutResponse>} - response data.
-     */
-    CreateRawPegout(jsonObject: CreateRawPegoutRequest): Promise<CreateRawPegoutResponse>;
-    /**
      * @param {ElementsCreateRawTransactionRequest} jsonObject - request data.
      * @return {Promise<ElementsCreateRawTransactionResponse>} - response data.
      */
@@ -1930,31 +1950,6 @@ export class Cfdjs {
      * @return {Promise<ElementsDecodeRawTransactionResponse>} - response data.
      */
     ElementsDecodeRawTransaction(jsonObject: ElementsDecodeRawTransactionRequest): Promise<ElementsDecodeRawTransactionResponse>;
-    /**
-     * @param {GetConfidentialAddressRequest} jsonObject - request data.
-     * @return {Promise<GetConfidentialAddressResponse>} - response data.
-     */
-    GetConfidentialAddress(jsonObject: GetConfidentialAddressRequest): Promise<GetConfidentialAddressResponse>;
-    /**
-     * @param {GetUnblindedAddressRequest} jsonObject - request data.
-     * @return {Promise<GetUnblindedAddressResponse>} - response data.
-     */
-    GetUnblindedAddress(jsonObject: GetUnblindedAddressRequest): Promise<GetUnblindedAddressResponse>;
-    /**
-     * @param {SetRawIssueAssetRequest} jsonObject - request data.
-     * @return {Promise<SetRawIssueAssetResponse>} - response data.
-     */
-    SetRawIssueAsset(jsonObject: SetRawIssueAssetRequest): Promise<SetRawIssueAssetResponse>;
-    /**
-     * @param {SetRawReissueAssetRequest} jsonObject - request data.
-     * @return {Promise<SetRawReissueAssetResponse>} - response data.
-     */
-    SetRawReissueAsset(jsonObject: SetRawReissueAssetRequest): Promise<SetRawReissueAssetResponse>;
-    /**
-     * @param {UnblindRawTransactionRequest} jsonObject - request data.
-     * @return {Promise<UnblindRawTransactionResponse>} - response data.
-     */
-    UnblindRawTransaction(jsonObject: UnblindRawTransactionRequest): Promise<UnblindRawTransactionResponse>;
     /**
      * @param {EncodeBase58Request} jsonObject - request data.
      * @return {Promise<EncodeBase58Response>} - response data.
@@ -1995,6 +1990,11 @@ export class Cfdjs {
      * @return {Promise<GetCompressedPubkeyResponse>} - response data.
      */
     GetCompressedPubkey(jsonObject: GetCompressedPubkeyRequest): Promise<GetCompressedPubkeyResponse>;
+    /**
+     * @param {GetConfidentialAddressRequest} jsonObject - request data.
+     * @return {Promise<GetConfidentialAddressResponse>} - response data.
+     */
+    GetConfidentialAddress(jsonObject: GetConfidentialAddressRequest): Promise<GetConfidentialAddressResponse>;
     /**
      * @param {GetDefaultBlindingKeyRequest} jsonObject - request data.
      * @return {Promise<GetDefaultBlindingKeyResponse>} - response data.
@@ -2040,16 +2040,18 @@ export class Cfdjs {
      * @return {Promise<GetPubkeyFromPrivkeyResponse>} - response data.
      */
     GetPubkeyFromPrivkey(jsonObject: GetPubkeyFromPrivkeyRequest): Promise<GetPubkeyFromPrivkeyResponse>;
+    /** @return {Promise<GetSupportedFunctionResponse>} - response data. */
+    GetSupportedFunction(): Promise<GetSupportedFunctionResponse>;
+    /**
+     * @param {GetUnblindedAddressRequest} jsonObject - request data.
+     * @return {Promise<GetUnblindedAddressResponse>} - response data.
+     */
+    GetUnblindedAddress(jsonObject: GetUnblindedAddressRequest): Promise<GetUnblindedAddressResponse>;
     /**
      * @param {GetWitnessStackNumRequest} jsonObject - request data.
      * @return {Promise<GetWitnessStackNumResponse>} - response data.
      */
     GetWitnessStackNum(jsonObject: GetWitnessStackNumRequest): Promise<GetWitnessStackNumResponse>;
-    /**
-     * @param {CreateMultisigRequest} jsonObject - request data.
-     * @return {Promise<CreateMultisigResponse>} - response data.
-     */
-    CreateMultisig(jsonObject: CreateMultisigRequest): Promise<CreateMultisigResponse>;
     /**
      * @param {ParseDescriptorRequest} jsonObject - request data.
      * @return {Promise<ParseDescriptorResponse>} - response data.
@@ -2071,27 +2073,25 @@ export class Cfdjs {
      */
     SerializeLedgerFormat(jsonObject: SerializeLedgerFormatRequest): Promise<SerializeLedgerFormatResponse>;
     /**
-     * @param {CreateSignatureHashRequest} jsonObject - request data.
-     * @return {Promise<CreateSignatureHashResponse>} - response data.
+     * @param {SetRawIssueAssetRequest} jsonObject - request data.
+     * @return {Promise<SetRawIssueAssetResponse>} - response data.
      */
-    CreateSignatureHash(jsonObject: CreateSignatureHashRequest): Promise<CreateSignatureHashResponse>;
+    SetRawIssueAsset(jsonObject: SetRawIssueAssetRequest): Promise<SetRawIssueAssetResponse>;
     /**
-     * @param {CreateElementsSignatureHashRequest} jsonObject - request data.
-     * @return {Promise<CreateElementsSignatureHashResponse>} - response data.
+     * @param {SetRawReissueAssetRequest} jsonObject - request data.
+     * @return {Promise<SetRawReissueAssetResponse>} - response data.
      */
-    CreateElementsSignatureHash(jsonObject: CreateElementsSignatureHashRequest): Promise<CreateElementsSignatureHashResponse>;
+    SetRawReissueAsset(jsonObject: SetRawReissueAssetRequest): Promise<SetRawReissueAssetResponse>;
     /**
      * @param {SignWithPrivkeyRequest} jsonObject - request data.
      * @return {Promise<SignWithPrivkeyResponse>} - response data.
      */
     SignWithPrivkey(jsonObject: SignWithPrivkeyRequest): Promise<SignWithPrivkeyResponse>;
-    /** @return {Promise<GetSupportedFunctionResponse>} - response data. */
-    GetSupportedFunction(): Promise<GetSupportedFunctionResponse>;
     /**
-     * @param {CreateRawTransactionRequest} jsonObject - request data.
-     * @return {Promise<CreateRawTransactionResponse>} - response data.
+     * @param {UnblindRawTransactionRequest} jsonObject - request data.
+     * @return {Promise<UnblindRawTransactionResponse>} - response data.
      */
-    CreateRawTransaction(jsonObject: CreateRawTransactionRequest): Promise<CreateRawTransactionResponse>;
+    UnblindRawTransaction(jsonObject: UnblindRawTransactionRequest): Promise<UnblindRawTransactionResponse>;
     /**
      * @param {UpdateTxOutAmountRequest} jsonObject - request data.
      * @return {Promise<UpdateTxOutAmountResponse>} - response data.

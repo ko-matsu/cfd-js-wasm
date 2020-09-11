@@ -1680,6 +1680,7 @@ function generateTsData(dirname: string, filename: string,
     classCommentMap[typeData.name] = typeData.comment;
   }
   jsonTypeList.sort((a, b) => a.name.localeCompare(b.name));
+  functionList.sort((a, b) => a.name.localeCompare(b.name));
 
   // initialize
   const project = new Project({
