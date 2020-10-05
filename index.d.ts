@@ -1590,6 +1590,14 @@ export interface GetPubkeyFromPrivkeyRequest {
 }
 
 /**
+ * Request to get a Schnorr pubkey from privkey.
+ * @property {string} privkey - privkey (wif or hex)
+ */
+export interface GetSchnorrPubkeyFromPrivkeyRequest {
+    privkey: string;
+}
+
+/**
  * Request for get supported function.
  * @property {boolean} bitcoin - bitcoin support flag
  * @property {boolean} elements - elements support flag
@@ -1839,6 +1847,47 @@ export interface ReissuanceDataRequest {
     assetBlindingNonce: string;
     assetEntropy: string;
     isRemoveNonce?: boolean;
+}
+
+/**
+ * Response Schnorr pubkey data.
+ * @property {string} pubkey - pubkey
+ */
+export interface SchnorrPubkeyData {
+    pubkey: string;
+}
+
+/** Request for creating a Schnorr signature. */
+export interface SchnorrSignRequest {
+    privkey: string;
+    message: string;
+    isHashed?: boolean;
+    nonceOrAux: string;
+    isNonce?: boolean;
+}
+
+/**
+ * Contains the generated Schnorr signature.
+ * @property {string} hex - signature hex.
+ */
+export interface SchnorrSignResponse {
+    hex: string;
+}
+
+/** Request for creating a Schnorr signature. */
+export interface SchnorrVerifyRequest {
+    pubkey: string;
+    message: string;
+    isHashed?: boolean;
+    signature: string;
+}
+
+/**
+ * Contains the validation result
+ * @property {boolean} valid - whether the signature is valid.
+ */
+export interface SchnorrVerifyResponse {
+    valid: boolean;
 }
 
 /** The data containing script. */
@@ -2588,6 +2637,12 @@ export class Cfdjs {
      */
     GetCommitment(jsonObject: GetCommitmentRequest): Promise<GetCommitmentResponse>;
     /**
+     * Get compressed pubkey.
+     * @param {PubkeyData} jsonObject - request data.
+     * @return {Promise<PubkeyData>} - response data.
+     */
+    GetCompressedPubkey(jsonObject: PubkeyData): Promise<PubkeyData>;
+    /**
      * Get confidential address.
      * @param {GetConfidentialAddressRequest} jsonObject - request data.
      * @return {Promise<GetConfidentialAddressResponse>} - response data.
@@ -2624,6 +2679,18 @@ export class Cfdjs {
      */
     GetPrivkeyFromExtkey(jsonObject: GetPrivkeyFromExtkeyRequest): Promise<GetPrivkeyFromExtkeyResponse>;
     /**
+     * Get privkey from wif.
+     * @param {PrivkeyWifData} jsonObject - request data.
+     * @return {Promise<PrivkeyHexData>} - response data.
+     */
+    GetPrivkeyFromWif(jsonObject: PrivkeyWifData): Promise<PrivkeyHexData>;
+    /**
+     * Get privkey on wif.
+     * @param {PrivkeyHexData} jsonObject - request data.
+     * @return {Promise<PrivkeyWifData>} - response data.
+     */
+    GetPrivkeyWif(jsonObject: PrivkeyHexData): Promise<PrivkeyWifData>;
+    /**
      * Get pubkey from extkey.
      * @param {GetPubkeyFromExtkeyRequest} jsonObject - request data.
      * @return {Promise<PubkeyData>} - response data.
@@ -2635,6 +2702,12 @@ export class Cfdjs {
      * @return {Promise<PubkeyData>} - response data.
      */
     GetPubkeyFromPrivkey(jsonObject: GetPubkeyFromPrivkeyRequest): Promise<PubkeyData>;
+    /**
+     * Get a Schnorr pubkey from a privkey.
+     * @param {GetSchnorrPubkeyFromPrivkeyRequest} jsonObject - request data.
+     * @return {Promise<SchnorrPubkeyData>} - response data.
+     */
+    GetSchnorrPubkeyFromPrivkey(jsonObject: GetSchnorrPubkeyFromPrivkeyRequest): Promise<SchnorrPubkeyData>;
     /**
      * Get supported function.
      * @return {Promise<GetSupportedFunctionResponse>} - response data.
@@ -2664,6 +2737,18 @@ export class Cfdjs {
      * @return {Promise<ParseScriptResponse>} - response data.
      */
     ParseScript(jsonObject: ParseScriptRequest): Promise<ParseScriptResponse>;
+    /**
+     * Create a Schnorr signature for a given message
+     * @param {SchnorrSignRequest} jsonObject - request data.
+     * @return {Promise<SchnorrSignResponse>} - response data.
+     */
+    SchnorrSign(jsonObject: SchnorrSignRequest): Promise<SchnorrSignResponse>;
+    /**
+     * Verify a Schnorr signature for a given message
+     * @param {SchnorrVerifyRequest} jsonObject - request data.
+     * @return {Promise<SchnorrVerifyResponse>} - response data.
+     */
+    SchnorrVerify(jsonObject: SchnorrVerifyRequest): Promise<SchnorrVerifyResponse>;
     /**
      * Select coins.
      * @param {SelectUtxosRequest} jsonObject - request data.

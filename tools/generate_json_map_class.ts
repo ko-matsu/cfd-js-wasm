@@ -2040,6 +2040,8 @@ function convertFile() {
           returnType: resType,
           parameters: param,
         });
+      } else if (file.indexOf('error_base.json') == -1) {
+        console.log(`---- empty function name: ${file}`);
       }
       debugLog(`reqData = ${reqData}`);
       debugLog(`resData = ${resData}`);
