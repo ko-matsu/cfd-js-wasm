@@ -18,7 +18,7 @@ const updateField = async function(event) {
 
   try {
     if (path.indexOf('*') > 0) {
-      path = path.replace('*', childNum);
+      path = path.replace( /\*/g, childNum);
     }
     const req = {
       extkey,
@@ -32,6 +32,7 @@ const updateField = async function(event) {
     data['path'] = path;
     data['network'] = network;
   } catch (e) {
+    console.log(e);
     decoded.value = 'Invalid input format';
     return;
   }
