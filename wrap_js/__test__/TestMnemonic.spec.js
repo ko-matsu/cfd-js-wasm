@@ -1,10 +1,11 @@
-const TestHelper = require('./TestHelper');
+const TestHelper = require('./JsonTestHelper');
 const fs = require('fs');
 
 const createTestFunc = (helper) => {
-  return async(cfd, testName, req, isError) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  return async (cfd, testName, req, isError) => {
     let resp;
-    if (testName == 'GetMnemonicWordList') {
+    if (testName == 'HDWallet.GetMnemonicWordList') {
       resp = cfd.GetMnemonicWordlist(req);
     } else {
       throw new Error('unknown name: ' + testName);
@@ -13,14 +14,16 @@ const createTestFunc = (helper) => {
   };
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const createCheckFunc = (helper) => {
-  return (resp, exp, isError) => {
-    if (isError) {
-      expect(exp.json).toEqual(resp);
-      return
+  return (resp, exp, errorData) => {
+    if (errorData) {
+      const errMsg = TestHelper.getErrorMessage(errorData);
+      expect(errMsg).toEqual(resp);
+      return;
     }
     const expWords = JSON.parse(fs.readFileSync(
-        `${__dirname}/data/${exp.file}`, 'utf8'));
+      `${__dirname}/data/${exp.file}`, 'utf8'));
     expect(resp.wordlist.length).toEqual(expWords.length);
     // for (const [index, word] of resp.wordlist.entries()) {
     //   expect(resp.wordlist[index]).toEqual(expWords[index]);
@@ -29,4 +32,4 @@ const createCheckFunc = (helper) => {
   };
 };
 
-TestHelper.doTest('GetMnemonicWordList', 'hdwallet_test', createTestFunc, createCheckFunc);
+TestHelper.doTest('HDWallet.GetMnemonicWordList', 'hdwallet_test', createTestFunc, createCheckFunc);
