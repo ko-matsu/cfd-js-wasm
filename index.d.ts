@@ -1,6 +1,16 @@
 /* eslint-disable max-len */
 /* eslint-disable indent */
 /**
+ * Request for adapt signature on ecdsa adaptor.
+ * @property {string} adaptorSignature - adaptor signature hex.
+ * @property {string} secret - secret data
+ */
+export interface AdaptEcdsaAdaptorRequest {
+    adaptorSignature: string;
+    secret: string;
+}
+
+/**
  * Multisig input data to add to tx.
  * @property {boolean} isElements? - elements transaction flag.
  * @property {string} tx - transaction hex
@@ -225,6 +235,20 @@ export interface CalculateEcSignatureRequest {
 }
 
 /**
+ * tweak pubkey data
+ * @property {string} pubkey - tweaked schnorr public key
+ * @property {boolean} parity - y-parity flag
+ * @property {string} basePubkey - tweak based schnorr public key
+ * @property {string} tweak - 32-byte tweak data
+ */
+export interface CheckTweakedSchnorrPubkeyRequest {
+    pubkey: string;
+    parity: boolean;
+    basePubkey: string;
+    tweak: string;
+}
+
+/**
  * fee information.
  * @property {bigint | number} txFeeAmount? - Tx fee amount excluding txin.
  * @property {number} feeRate? - network fee rate
@@ -242,6 +266,20 @@ export interface CoinSelectionFeeInformationField {
     feeAsset?: string;
     exponent?: number;
     minimumBits?: number;
+}
+
+/**
+ * Request for compute sigpoint on schnorr
+ * @property {string} message - message data. (32-byte hash, or text message.)
+ * @property {boolean} isHashed? - is 32-byte hashed message.
+ * @property {string} nonce - 32-byte nonce data.
+ * @property {string} schnorrPubkey - xonly public key.
+ */
+export interface ComputeSigPointRequest {
+    message: string;
+    isHashed?: boolean;
+    nonce: string;
+    schnorrPubkey: string;
 }
 
 /**
@@ -1255,6 +1293,18 @@ export interface EstimateFeeResponse {
 }
 
 /**
+ * Request for extract secret data on ecdsa adaptor.
+ * @property {string} adaptorSignature - adaptor signature hex.
+ * @property {string} signature - signature hex.
+ * @property {string} adaptor - adaptor pubkey
+ */
+export interface ExtractSecretEcdsaAdaptorRequest {
+    adaptorSignature: string;
+    signature: string;
+    adaptor: string;
+}
+
+/**
  * @property {string} txid - utxo txid
  * @property {number} vout - utxo vout
  * @property {string} reason - error reason.
@@ -1713,6 +1763,14 @@ export interface OutputDescriptorResponse {
 }
 
 /**
+ * privkey data.
+ * @property {string} privkey - privkey hex
+ */
+export interface OutputPrivkeyData {
+    privkey: string;
+}
+
+/**
  * Request for parse output descriptor.
  * @property {boolean} isElements? - elements flag.
  * @property {string} descriptor - output descriptor
@@ -1765,13 +1823,13 @@ export interface ParseScriptResponse {
 /**
  * private key data.
  * @property {string} privkey - private key. set is wif or hex.
- * @property {boolean} wif - use wif flag. true is wif, false is hex.
+ * @property {boolean} wif? - use wif flag. true is wif, false is hex.
  * @property {string} network? - wif network type. (mainnet, testnet or regtest)
  * @property {boolean} isCompressed? - wif compressed flag
  */
 export interface PrivkeyData {
     privkey: string;
-    wif: boolean;
+    wif?: boolean;
     network?: string;
     isCompressed?: boolean;
 }
@@ -1797,11 +1855,19 @@ export interface PrivkeyWifData {
 }
 
 /**
- * Request for get compressed pubkey.
+ * Response pubkey data.
  * @property {string} pubkey - pubkey
  */
 export interface PubkeyData {
     pubkey: string;
+}
+
+/**
+ * pubkey list data
+ * @property {string[]} pubkeys - public key list
+ */
+export interface PubkeyListData {
+    pubkeys: string[];
 }
 
 /**
@@ -1850,11 +1916,25 @@ export interface ReissuanceDataRequest {
 }
 
 /**
- * Response Schnorr pubkey data.
- * @property {string} pubkey - pubkey
+ * schnorr pubkey data.
+ * @property {string} pubkey - schnorr public key
+ * @property {boolean} parity - y-parity flag
+ * @property {string} privkey - privkey hex
+ */
+export interface SchnorrKeyPairData {
+    pubkey: string;
+    parity: boolean;
+    privkey: string;
+}
+
+/**
+ * Schnorr pubkey data.
+ * @property {string} pubkey - schnorr public key
+ * @property {boolean} parity - y-parity flag
  */
 export interface SchnorrPubkeyData {
     pubkey: string;
+    parity: boolean;
 }
 
 /** Request for creating a Schnorr signature. */
@@ -1893,6 +1973,14 @@ export interface SchnorrVerifyResponse {
 /** The data containing script. */
 export interface ScriptDataResponse {
     hex: string;
+}
+
+/**
+ * Response of extract secret.
+ * @property {string} secret - secret data
+ */
+export interface SecretData {
+    secret: string;
 }
 
 /**
@@ -2060,6 +2148,30 @@ export interface SignData {
 }
 
 /**
+ * Request for sign on ecdsa adaptor
+ * @property {string} message - message data. (32-byte hash, or text message.)
+ * @property {boolean} isHashed? - is 32-byte hashed message.
+ * @property {string} privkey - private key.
+ * @property {string} adaptor - adaptor public key.
+ */
+export interface SignEcdsaAdaptorRequest {
+    message: string;
+    isHashed?: boolean;
+    privkey: string;
+    adaptor: string;
+}
+
+/**
+ * Response of sign on ecdsa adaptor
+ * @property {string} adaptorSignature - adaptor signature hex.
+ * @property {string} proof - adaptor proof.
+ */
+export interface SignEcdsaAdaptorResponse {
+    adaptorSignature: string;
+    proof: string;
+}
+
+/**
  * Request for add sign with privkey
  * @property {boolean} isElements? - elements transaction flag.
  * @property {string} tx - transaction hex
@@ -2103,6 +2215,26 @@ export interface SignWithPrivkeyTxInRequest {
 export interface TargetAmountMapData {
     asset?: string;
     amount: bigint | number;
+}
+
+/**
+ * tweak privkey data
+ * @property {string} privkey - privkey (wif or hex)
+ * @property {string} tweak - 32-byte tweak data
+ */
+export interface TweakPrivkeyData {
+    privkey: string;
+    tweak: string;
+}
+
+/**
+ * tweak pubkey data
+ * @property {string} pubkey - public key
+ * @property {string} tweak - 32-byte tweak data
+ */
+export interface TweakPubkeyData {
+    pubkey: string;
+    tweak: string;
 }
 
 /**
@@ -2280,6 +2412,24 @@ export interface UtxoJsonData {
 
 /**
  * Request for verify signature
+ * @property {string} adaptorSignature - adaptor signature hex.
+ * @property {string} proof - adaptor proof.
+ * @property {string} adaptor - adaptor public key.
+ * @property {string} message - message data. (32-byte hash, or text message.)
+ * @property {boolean} isHashed? - is 32-byte hashed message.
+ * @property {string} pubkey - public key.
+ */
+export interface VerifyEcdsaAdaptorRequest {
+    adaptorSignature: string;
+    proof: string;
+    adaptor: string;
+    message: string;
+    isHashed?: boolean;
+    pubkey: string;
+}
+
+/**
+ * Request for verify signature
  * @property {string} tx - transaction hex
  * @property {boolean} isElements? - elements transaction flag.
  * @property {VerifySignatureTxInRequest} txin - txin data
@@ -2379,6 +2529,12 @@ export interface WitnessStackData {
 /** function definition class. */
 export class Cfdjs {
     /**
+     * Adapt signature on ecdsa adaptor.
+     * @param {AdaptEcdsaAdaptorRequest} jsonObject - request data.
+     * @return {Promise<SignatureDataResponse>} - response data.
+     */
+    AdaptEcdsaAdaptor(jsonObject: AdaptEcdsaAdaptorRequest): Promise<SignatureDataResponse>;
+    /**
      * Add multisig signatures to the transaction.
      * @param {AddMultisigSignRequest} jsonObject - request data.
      * @return {Promise<RawTransactionResponse>} - response data.
@@ -2426,6 +2582,24 @@ export class Cfdjs {
      * @return {Promise<SignatureDataResponse>} - response data.
      */
     CalculateEcSignature(jsonObject: CalculateEcSignatureRequest): Promise<SignatureDataResponse>;
+    /**
+     * check tweakadd schnorr pubkey.
+     * @param {CheckTweakedSchnorrPubkeyRequest} jsonObject - request data.
+     * @return {Promise<VerifySignatureResponse>} - response data.
+     */
+    CheckTweakedSchnorrPubkey(jsonObject: CheckTweakedSchnorrPubkeyRequest): Promise<VerifySignatureResponse>;
+    /**
+     * Combine pubkey.
+     * @param {PubkeyListData} jsonObject - request data.
+     * @return {Promise<PubkeyData>} - response data.
+     */
+    CombinePubkey(jsonObject: PubkeyListData): Promise<PubkeyData>;
+    /**
+     * compute sigpoint on schnorr pubkey.
+     * @param {ComputeSigPointRequest} jsonObject - request data.
+     * @return {Promise<PubkeyData>} - response data.
+     */
+    ComputeSigPointSchnorrPubkey(jsonObject: ComputeSigPointRequest): Promise<PubkeyData>;
     /**
      * Encode/Decode AES.
      * @param {ConvertAesRequest} jsonObject - request data.
@@ -2613,6 +2787,12 @@ export class Cfdjs {
      */
     EstimateFee(jsonObject: EstimateFeeRequest): Promise<EstimateFeeResponse>;
     /**
+     * Extract secret data on ecdsa adaptor.
+     * @param {ExtractSecretEcdsaAdaptorRequest} jsonObject - request data.
+     * @return {Promise<SecretData>} - response data.
+     */
+    ExtractSecretEcdsaAdaptor(jsonObject: ExtractSecretEcdsaAdaptorRequest): Promise<SecretData>;
+    /**
      * Fund transaction.
      * @param {FundRawTransactionRequest} jsonObject - request data.
      * @return {Promise<FundRawTransactionResponse>} - response data.
@@ -2709,6 +2889,12 @@ export class Cfdjs {
      */
     GetSchnorrPubkeyFromPrivkey(jsonObject: GetSchnorrPubkeyFromPrivkeyRequest): Promise<SchnorrPubkeyData>;
     /**
+     * get schnorr pubkey from pubkey.
+     * @param {PubkeyData} jsonObject - request data.
+     * @return {Promise<SchnorrPubkeyData>} - response data.
+     */
+    GetSchnorrPubkeyFromPubkey(jsonObject: PubkeyData): Promise<SchnorrPubkeyData>;
+    /**
      * Get supported function.
      * @return {Promise<GetSupportedFunctionResponse>} - response data.
      */
@@ -2720,11 +2906,29 @@ export class Cfdjs {
      */
     GetUnblindedAddress(jsonObject: GetUnblindedAddressRequest): Promise<GetUnblindedAddressResponse>;
     /**
+     * Get uncompressed pubkey.
+     * @param {PubkeyData} jsonObject - request data.
+     * @return {Promise<PubkeyData>} - response data.
+     */
+    GetUncompressedPubkey(jsonObject: PubkeyData): Promise<PubkeyData>;
+    /**
      * Get witness stack count.
      * @param {GetWitnessStackNumRequest} jsonObject - request data.
      * @return {Promise<GetWitnessStackNumResponse>} - response data.
      */
     GetWitnessStackNum(jsonObject: GetWitnessStackNumRequest): Promise<GetWitnessStackNumResponse>;
+    /**
+     * Negate privkey.
+     * @param {PrivkeyData} jsonObject - request data.
+     * @return {Promise<OutputPrivkeyData>} - response data.
+     */
+    NegatePrivkey(jsonObject: PrivkeyData): Promise<OutputPrivkeyData>;
+    /**
+     * Negate pubkey.
+     * @param {PubkeyData} jsonObject - request data.
+     * @return {Promise<PubkeyData>} - response data.
+     */
+    NegatePubkey(jsonObject: PubkeyData): Promise<PubkeyData>;
     /**
      * Parse output descriptor.
      * @param {ParseDescriptorRequest} jsonObject - request data.
@@ -2774,11 +2978,53 @@ export class Cfdjs {
      */
     SetRawReissueAsset(jsonObject: SetRawReissueAssetRequest): Promise<SetRawReissueAssetResponse>;
     /**
+     * sign on ecdsa adaptor.
+     * @param {SignEcdsaAdaptorRequest} jsonObject - request data.
+     * @return {Promise<SignEcdsaAdaptorResponse>} - response data.
+     */
+    SignEcdsaAdaptor(jsonObject: SignEcdsaAdaptorRequest): Promise<SignEcdsaAdaptorResponse>;
+    /**
      * Add sign and set pubkey hash input
      * @param {SignWithPrivkeyRequest} jsonObject - request data.
      * @return {Promise<RawTransactionResponse>} - response data.
      */
     SignWithPrivkey(jsonObject: SignWithPrivkeyRequest): Promise<RawTransactionResponse>;
+    /**
+     * TweakAdd privkey.
+     * @param {TweakPrivkeyData} jsonObject - request data.
+     * @return {Promise<OutputPrivkeyData>} - response data.
+     */
+    TweakAddPrivkey(jsonObject: TweakPrivkeyData): Promise<OutputPrivkeyData>;
+    /**
+     * TweakAdd pubkey.
+     * @param {TweakPubkeyData} jsonObject - request data.
+     * @return {Promise<PubkeyData>} - response data.
+     */
+    TweakAddPubkey(jsonObject: TweakPubkeyData): Promise<PubkeyData>;
+    /**
+     * TweakAdd schnorr pubkey from privkey.
+     * @param {TweakPrivkeyData} jsonObject - request data.
+     * @return {Promise<SchnorrKeyPairData>} - response data.
+     */
+    TweakAddSchnorrPubkeyFromPrivkey(jsonObject: TweakPrivkeyData): Promise<SchnorrKeyPairData>;
+    /**
+     * TweakAdd schnorr pubkey from pubkey.
+     * @param {TweakPubkeyData} jsonObject - request data.
+     * @return {Promise<SchnorrPubkeyData>} - response data.
+     */
+    TweakAddSchnorrPubkeyFromPubkey(jsonObject: TweakPubkeyData): Promise<SchnorrPubkeyData>;
+    /**
+     * TweakMul privkey.
+     * @param {TweakPrivkeyData} jsonObject - request data.
+     * @return {Promise<OutputPrivkeyData>} - response data.
+     */
+    TweakMulPrivkey(jsonObject: TweakPrivkeyData): Promise<OutputPrivkeyData>;
+    /**
+     * TweakMul pubkey.
+     * @param {TweakPubkeyData} jsonObject - request data.
+     * @return {Promise<PubkeyData>} - response data.
+     */
+    TweakMulPubkey(jsonObject: TweakPubkeyData): Promise<PubkeyData>;
     /**
      * Unblind transaction.
      * @param {UnblindRawTransactionRequest} jsonObject - request data.
@@ -2797,6 +3043,12 @@ export class Cfdjs {
      * @return {Promise<RawTransactionResponse>} - response data.
      */
     UpdateWitnessStack(jsonObject: UpdateWitnessStackRequest): Promise<RawTransactionResponse>;
+    /**
+     * Verify signature on ecdsa adaptor.
+     * @param {VerifyEcdsaAdaptorRequest} jsonObject - request data.
+     * @return {Promise<VerifySignatureResponse>} - response data.
+     */
+    VerifyEcdsaAdaptor(jsonObject: VerifyEcdsaAdaptorRequest): Promise<VerifySignatureResponse>;
     /**
      * Verify transaction sign. (only pubkey hash or multisig script.)
      * @param {VerifySignRequest} jsonObject - request data.
