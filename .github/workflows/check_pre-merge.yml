@@ -70,6 +70,7 @@ jobs:
         npm set progress=false
         npm ci
     - name: test
+      if: matrix.node != 8
       run: npm run test
     - name: example
       run: |
