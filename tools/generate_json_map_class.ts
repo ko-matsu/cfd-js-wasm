@@ -61,6 +61,7 @@ interface ReferenceClassInfo {
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 let debugLog = function(...args: any | any[]) {
   // do nothing
+  // console.log(...args);
 };
 
 // eslint-disable-next-line prefer-const
@@ -379,7 +380,7 @@ class JsonData {
   constructor(filename: string, inputJsonData: any,
       requestData: JsonMappingData | null | undefined,
       responseData: JsonMappingData | null | undefined) {
-    this.filename = filename.split('.').shift() || '';
+    this.filename = path.basename(filename).split('.').shift() || '';
     this.inputJsonData = inputJsonData;
     this.requestData = requestData;
     this.responseData = responseData;
@@ -1893,7 +1894,7 @@ function generateTsData(dirname: string, filename: string,
 // ----------------------------------------------------------------------------
 // search file
 // ----------------------------------------------------------------------------
-function convertFile() {
+async function convertFile() {
   // const today = new Date();
   // const year = today.getFullYear();
   const year = 2020;
@@ -1994,150 +1995,172 @@ function convertFile() {
   }
 
   let jsonObjectCommon: JsonObjectCommonType | undefined = undefined;
-  fs.readdir(folderPath, (err, files) => {
-    if (err) throw err;
-    files.filter(function(file) {
-      // filter
-      return fs.statSync(`${folderPath}${file}`).isFile() && /.*\.json$/.test(file);
-    }).forEach(function(file) {
-      console.log(`file = ${file}`);
-      const inFile = `${folderPath}${file}`;
-      // const outFile = file.replace(/\.json$/i, '_json');
-      // const outHeaderFile = `${outFile}.h`;
-      // const outSourceFile = `${outFile}.cpp`;
+  const fileList: string[] = [];
+  const fsAsync = fs.promises;
 
-      // read json
-      const jsonObject = JSON.parse(fs.readFileSync(inFile, 'utf8'));
-      const reqData = (jsonObject.request) ? analyzeJson(jsonObject.request, 'root') : null;
-      const resData = (jsonObject.response) ? analyzeJson(jsonObject.response, 'root') : null;
-      let funcName = (jsonObject.functionName) ? jsonObject.functionName : '';
-      let reqType = '';
-      let resType = '';
-      if (reqData != null) {
-        reqData.collectMapData(jsonClassMap, jsonTypeList, true, reqData);
-        if (funcName == '') funcName = reqData.getFunctionName();
-        reqType = reqData.type;
-      }
-      if (resData != null) {
-        resData.collectMapData(jsonClassMap, jsonTypeList, false, resData);
-        resType = resData.type;
-        responseTypeSet.add(resData.type);
-        if (funcName == '') funcName = resData.getFunctionName();
-      }
-      if (funcName != '') {
-        const comm = jsonObject.comment || '';
-        const param = [];
-        if (reqType) {
-          param.push({
-            name: 'jsonObject',
-            type: reqType,
-            comment: '',
-          });
+  const searchFunc = async function(dirPath: string) {
+    const tempDirList = await fsAsync.readdir(dirPath);
+    for (const target of tempDirList) {
+      if (target) {
+        const curPath = path.join(dirPath, target);
+        const statInfo = fs.statSync(curPath);
+        if (statInfo.isDirectory()) {
+          if ((target != '.') && (target != '..')) {
+            await searchFunc(curPath);
+          }
+        } else if (statInfo.isFile() && /.*\.json$/.test(target)) {
+          fileList.push(curPath);
         }
-        functionList.push({
-          name: funcName,
-          comment: comm,
-          returnType: resType,
-          parameters: param,
-        });
-      } else if (file.indexOf('error_base.json') == -1) {
-        console.log(`---- empty function name: ${file}`);
-      }
-      debugLog(`reqData = ${reqData}`);
-      debugLog(`resData = ${resData}`);
-      jsonDataList.push(new JsonData(file, jsonObject, reqData, resData));
-
-      if (jsonObjectCommon === undefined) {
-        jsonObjectCommon = jsonObject;
-      } else {
-        if (jsonObject.namespace && jsonObject.namespace.length > 0) {
-          jsonObjectCommon['namespace'] = jsonObject.namespace;
-        }
-        if (jsonObject.commonHeader && jsonObject.commonHeader.length > 0) {
-          jsonObjectCommon['commonHeader'] = jsonObject.commonHeader;
-        }
-      }
-    });
-
-    const referenceSet: Set<string> = new Set();
-    const referenceList = generateReferenceClassList(
-        jsonClassMap, functionList, referenceSet);
-    if (jsonDataList.length > 0) {
-      jsonDataList.sort((a, b) => a.filename.localeCompare(b.filename));
-      const classHeaderSet: Set<string> = new Set();
-      const classSourceSet: Set<string> = new Set();
-      const dummyJson = {export: ''};
-      for (const refData of referenceList) {
-        if (jsonClassMap[refData.name]) {
-          const headerStr = generateClassHeaderDirect(
-              jsonClassMap[refData.name].data, dummyJson, undefined);
-          classHeaderList.push(headerStr);
-          const srcStr = generateClassSourceDirect(
-              jsonClassMap[refData.name].data, undefined);
-          classSourceList.push(srcStr);
-          classHeaderSet.add(refData.name);
-          classSourceSet.add(refData.name);
-        }
-      }
-      for (const data of jsonDataList) {
-        const headerStr = generateClassHeader(
-            data.requestData, data.responseData, data.inputJsonData,
-            classHeaderSet);
-        classHeaderList.push(headerStr);
-        const srcStr = generateClassSource(
-            data.requestData, data.responseData, classSourceSet);
-        classSourceList.push(srcStr);
       }
     }
+  };
+  await searchFunc(folderPath);
 
-    {
-      let namespaceName = '';
-      const namespace = (jsonObjectCommon) ? jsonObjectCommon.namespace : '';
-      if (typeof namespace !== 'string') {
-        for (let idx = 0; idx < namespace.length; ++idx) {
-          if (idx !== 0) namespaceName += '_';
-          namespaceName += namespace[idx];
-        }
-      } else {
-        namespaceName += namespace;
-      }
-
-      if (outStructFileName !== '') {
-        const outHeaderFile = `${namespaceName}_autogen.h`;
-        const outSourceFile = `${namespaceName}_autogen.cpp`;
-        const headerStr = generateFileHeader(copyright, outHeaderFile,
-            outJsonHeaderFolderPath,
-            classHeaderList, jsonObjectCommon, `${libPrefix}/${outStructFileName}`);
-        fs.writeFileSync(`${outJsonHeaderFolderPath}${outHeaderFile}`, headerStr);
-        const srcStr = generateFileSource(copyright, outSourceFile,
-            outHeaderFile, classSourceList, jsonObjectCommon);
-        fs.writeFileSync(`${outJsonSourceFolderPath}${outSourceFile}`, srcStr);
-      }
-    };
-
-    if ((jsonDataList.length > 0) && (outStructFileName !== '')) {
-      const headerStr = generateStructHeader(copyright, outStructDirPath,
-          outStructFileName, jsonDataList, libNamespace,
-          referenceList, jsonClassMap, responseTypeSet);
-      fs.writeFileSync(path.resolve(`${outStructDirPath}${outStructFileName}`), headerStr);
-      console.log(`output: ${outStructFileName}`);
-    }
-
-    if (jsonTypeList.length > 0) {
+  for (const file of fileList) {
+    if (file) {
       try {
-        fs.unlinkSync(path.resolve(`${cfdBaseDir}${outTsFileName}`));
-      } catch (err) {
-        // do nothing
+        console.log(`file = ${file}`);
+        const inFile = file;
+        // const outFile = file.replace(/\.json$/i, '_json');
+        // const outHeaderFile = `${outFile}.h`;
+        // const outSourceFile = `${outFile}.cpp`;
+
+        // read json
+        const jsonObject = JSON.parse(fs.readFileSync(inFile, 'utf8'));
+        const reqData = (jsonObject.request) ? analyzeJson(jsonObject.request, 'root') : null;
+        const resData = (jsonObject.response) ? analyzeJson(jsonObject.response, 'root') : null;
+        let funcName = (jsonObject.functionName) ? jsonObject.functionName : '';
+        let reqType = '';
+        let resType = '';
+        if (reqData != null) {
+          reqData.collectMapData(jsonClassMap, jsonTypeList, true, reqData);
+          if (funcName == '') funcName = reqData.getFunctionName();
+          reqType = reqData.type;
+        }
+        if (resData != null) {
+          resData.collectMapData(jsonClassMap, jsonTypeList, false, resData);
+          resType = resData.type;
+          responseTypeSet.add(resData.type);
+          if (funcName == '') funcName = resData.getFunctionName();
+        }
+        if (funcName != '') {
+          const comm = jsonObject.comment || '';
+          const param = [];
+          if (reqType) {
+            param.push({
+              name: 'jsonObject',
+              type: reqType,
+              comment: '',
+            });
+          }
+          functionList.push({
+            name: funcName,
+            comment: comm,
+            returnType: resType,
+            parameters: param,
+          });
+        } else if (file.indexOf('error_base.json') == -1) {
+          console.log(`---- empty function name: ${file}`);
+        }
+        debugLog(`reqData = ${reqData}`);
+        debugLog(`resData = ${resData}`);
+        jsonDataList.push(new JsonData(file, jsonObject, reqData, resData));
+
+        if (jsonObjectCommon === undefined) {
+          jsonObjectCommon = jsonObject;
+        } else {
+          if (jsonObject.namespace && jsonObject.namespace.length > 0) {
+            jsonObjectCommon['namespace'] = jsonObject.namespace;
+          }
+          if (jsonObject.commonHeader && jsonObject.commonHeader.length > 0) {
+            jsonObjectCommon['commonHeader'] = jsonObject.commonHeader;
+          }
+        }
+      } catch (e) {
+        console.log('Exception: ' + path.basename(file));
+        throw e;
       }
-      generateTsData(outTsFolderPath, outTsFileName, jsonClassMap,
-          jsonTypeList, functionList, loadCfdjsIndexFile, promiseMode,
-          tsClassName, insertFunctions, errorClassName, insertErrorFunctions);
     }
-  });
+  }
+
+  const referenceSet: Set<string> = new Set();
+  const referenceList = generateReferenceClassList(
+      jsonClassMap, functionList, referenceSet);
+  if (jsonDataList.length > 0) {
+    jsonDataList.sort((a, b) => a.filename.localeCompare(b.filename));
+    const classHeaderSet: Set<string> = new Set();
+    const classSourceSet: Set<string> = new Set();
+    const dummyJson = {export: ''};
+    for (const refData of referenceList) {
+      if (jsonClassMap[refData.name]) {
+        const headerStr = generateClassHeaderDirect(
+            jsonClassMap[refData.name].data, dummyJson, undefined);
+        classHeaderList.push(headerStr);
+        const srcStr = generateClassSourceDirect(
+            jsonClassMap[refData.name].data, undefined);
+        classSourceList.push(srcStr);
+        classHeaderSet.add(refData.name);
+        classSourceSet.add(refData.name);
+      }
+    }
+    for (const data of jsonDataList) {
+      const headerStr = generateClassHeader(
+          data.requestData, data.responseData, data.inputJsonData,
+          classHeaderSet);
+      classHeaderList.push(headerStr);
+      const srcStr = generateClassSource(
+          data.requestData, data.responseData, classSourceSet);
+      classSourceList.push(srcStr);
+    }
+  }
+
+  {
+    let namespaceName = '';
+    const namespace = (jsonObjectCommon) ? jsonObjectCommon.namespace || '' : '';
+    if (typeof namespace !== 'string') {
+      for (let idx = 0; idx < namespace.length; ++idx) {
+        if (idx !== 0) namespaceName += '_';
+        namespaceName += namespace[idx];
+      }
+    } else {
+      namespaceName += namespace;
+    }
+
+    if (outStructFileName !== '') {
+      const outHeaderFile = `${namespaceName}_autogen.h`;
+      const outSourceFile = `${namespaceName}_autogen.cpp`;
+      const headerStr = generateFileHeader(copyright, outHeaderFile,
+          outJsonHeaderFolderPath,
+          classHeaderList, jsonObjectCommon, `${libPrefix}/${outStructFileName}`);
+      fs.writeFileSync(`${outJsonHeaderFolderPath}${outHeaderFile}`, headerStr);
+      const srcStr = generateFileSource(copyright, outSourceFile,
+          outHeaderFile, classSourceList, jsonObjectCommon);
+      fs.writeFileSync(`${outJsonSourceFolderPath}${outSourceFile}`, srcStr);
+    }
+  };
+
+  if ((jsonDataList.length > 0) && (outStructFileName !== '')) {
+    const headerStr = generateStructHeader(copyright, outStructDirPath,
+        outStructFileName, jsonDataList, libNamespace,
+        referenceList, jsonClassMap, responseTypeSet);
+    fs.writeFileSync(path.resolve(`${outStructDirPath}${outStructFileName}`), headerStr);
+    console.log(`output: ${outStructFileName}`);
+  }
+
+  if (jsonTypeList.length > 0) {
+    try {
+      fs.unlinkSync(path.resolve(`${cfdBaseDir}${outTsFileName}`));
+    } catch (err) {
+      // do nothing
+    }
+    generateTsData(outTsFolderPath, outTsFileName, jsonClassMap,
+        jsonTypeList, functionList, loadCfdjsIndexFile, promiseMode,
+        tsClassName, insertFunctions, errorClassName, insertErrorFunctions);
+  }
 };
 
 
-const main = function() {
+const main = async function() {
   for (let i = 2; i < process.argv.length; i++) {
     if (process.argv[i]) {
       if (process.argv[i] === 'mode=debug') {
@@ -2165,6 +2188,6 @@ const main = function() {
     }
   }
 
-  convertFile();
+  await convertFile();
 };
 main();
