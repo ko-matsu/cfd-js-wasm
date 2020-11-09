@@ -19,17 +19,11 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: [8, 12, 14]
+        node: [8, 12, 14, 15]
 
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/setup-node@v2.1.0
-      continue-on-error: true
-      timeout-minutes: 1
-      with:
-        node-version: ${{ matrix.node }}
-    - name: setup-node retry
-      uses: actions/setup-node@v2.1.0
+    - uses: actions/setup-node@v2.1.2
       timeout-minutes: 1
       with:
         node-version: ${{ matrix.node }}
@@ -69,6 +63,9 @@ jobs:
       run: |
         npm set progress=false
         npm ci
+    - name: test
+      if: matrix.node != 8
+      run: npm run test
     - name: example
       run: |
         npm run example
