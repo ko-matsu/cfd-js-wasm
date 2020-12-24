@@ -1693,7 +1693,7 @@ function generateTsData(dirname: string, filename: string,
   // initialize
   const project = new Project({
     tsConfigFilePath: `${__dirname}/../tsconfig.json`,
-    addFilesFromTsConfig: false,
+    // addFilesFromTsConfig: false,
   });
 
   if (loadCfdjsIndexFile) {
@@ -2147,7 +2147,7 @@ async function convertFile() {
     console.log(`output: ${outStructFileName}`);
   }
 
-  if (jsonTypeList.length > 0) {
+  if ((jsonTypeList.length > 0) && (outTsFileName.length > 0)) {
     try {
       fs.unlinkSync(path.resolve(`${cfdBaseDir}${outTsFileName}`));
     } catch (err) {
