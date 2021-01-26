@@ -43,6 +43,18 @@ export interface AddMultisigSignTxInRequest {
 }
 
 /**
+ * request for add psbt data.
+ * @property {string} psbt - psbt data (hex or base64)
+ * @property {PsbtAddInputRequest[]} inputs? - request for add psbt input.
+ * @property {PsbtAddOutputRequest[]} outputs? - request for add psbt output.
+ */
+export interface AddPsbtDataRequest {
+    psbt: string;
+    inputs?: PsbtAddInputRequest[];
+    outputs?: PsbtAddOutputRequest[];
+}
+
+/**
  * pubkey hash input data to add to tx.
  * @property {boolean} isElements? - elements transaction flag.
  * @property {string} tx - transaction hex
@@ -146,6 +158,14 @@ export interface AddSignTxInRequest {
 export interface AppendDescriptorChecksumRequest {
     descriptor: string;
     isElements?: boolean;
+}
+
+/**
+ * base64 data
+ * @property {string} base64 - base64 data
+ */
+export interface Base64Data {
+    base64: string;
 }
 
 /**
@@ -362,6 +382,16 @@ export interface ConvertMnemonicToSeedRequest {
 export interface ConvertMnemonicToSeedResponse {
     seed: string;
     entropy?: string;
+}
+
+/**
+ * Request for ConvertToPsbt.
+ * @property {string} tx - transaction hex
+ * @property {boolean} permitSigData? - If true, any signatures in the input will be discarded and conversion will continue. If false, this function will fail if any signatures are present.
+ */
+export interface ConvertToPsbtRequest {
+    tx: string;
+    permitSigData?: boolean;
 }
 
 /**
@@ -803,6 +833,106 @@ export interface DecodeLockingScript {
     reqSigs?: number;
     type?: string;
     addresses?: string[];
+}
+
+/**
+ * psbt input data
+ * @property {string} non_witness_utxo_hex? - If hasDetail is true, tx hex for not witness set.
+ * @property {DecodeRawTransactionResponse} non_witness_utxo? - utxo for not witness. If hasDetail and hasSimple are true, this field is disabled.
+ * @property {DecodePsbtUtxo} witness_utxo? - utxo for witness
+ * @property {PsbtSignatureData[]} partial_signatures? - psbt signature data.
+ * @property {string} sighash? - sighash type (ALL, SINGLE, NONE)
+ * @property {PsbtScriptData} redeem_script? - redeem script
+ * @property {PsbtScriptData} witness_script? - witness script
+ * @property {PsbtBip32Data[]} bip32_derivs? - psbt script data
+ * @property {DecodeUnlockingScript} final_scriptsig? - final scriptsig
+ * @property {string[]} final_scriptwitness? - final witness stack
+ * @property {PsbtMapData[]} unknown? - psbt map data.
+ */
+export interface DecodePsbtInput {
+    non_witness_utxo_hex?: string;
+    non_witness_utxo?: DecodeRawTransactionResponse;
+    witness_utxo?: DecodePsbtUtxo;
+    partial_signatures?: PsbtSignatureData[];
+    sighash?: string;
+    redeem_script?: PsbtScriptData;
+    witness_script?: PsbtScriptData;
+    bip32_derivs?: PsbtBip32Data[];
+    final_scriptsig?: DecodeUnlockingScript;
+    final_scriptwitness?: string[];
+    unknown?: PsbtMapData[];
+}
+
+/**
+ * @property {string} asm? - script asm string
+ * @property {string} hex? - script hex
+ * @property {string} type? - script type
+ * @property {string} address? - address
+ */
+export interface DecodePsbtLockingScript {
+    asm?: string;
+    hex?: string;
+    type?: string;
+    address?: string;
+}
+
+/**
+ * psbt output data
+ * @property {PsbtScriptData} redeem_script? - redeem script
+ * @property {PsbtScriptData} witness_script? - witness script
+ * @property {PsbtBip32Data[]} bip32_derivs? - psbt script data
+ * @property {PsbtMapData[]} unknown? - psbt map data.
+ */
+export interface DecodePsbtOutput {
+    redeem_script?: PsbtScriptData;
+    witness_script?: PsbtScriptData;
+    bip32_derivs?: PsbtBip32Data[];
+    unknown?: PsbtMapData[];
+}
+
+/**
+ * request for decode psbt.
+ * @property {string} psbt - psbt data (hex or base64)
+ * @property {string} network? - network type (mainnet, testnet, regtest)
+ * @property {boolean} hasDetail? - detail dump option.
+ * @property {boolean} hasSimple? - simple dump option.
+ */
+export interface DecodePsbtRequest {
+    psbt: string;
+    network?: string;
+    hasDetail?: boolean;
+    hasSimple?: boolean;
+}
+
+/**
+ * response data of decode psbt.
+ * @property {DecodeRawTransactionResponse} tx? - transaction data. If hasDetail and hasSimple are true, this field is disabled.
+ * @property {string} tx_hex? - If hasDetail is true, tx hex set.
+ * @property {PsbtGlobalXpub[]} xpubs? - psbt global xpub data
+ * @property {number} version? - If hasDetail is true, psbt version set. (remove from global unknown)
+ * @property {PsbtMapData[]} unknown? - psbt map data.
+ * @property {DecodePsbtInput[]} inputs - psbt input data
+ * @property {DecodePsbtOutput[]} outputs - psbt output data
+ * @property {bigint} fee? - If all utxos filled, this field has set fee amount.
+ */
+export interface DecodePsbtResponse {
+    tx?: DecodeRawTransactionResponse;
+    tx_hex?: string;
+    xpubs?: PsbtGlobalXpub[];
+    version?: number;
+    unknown?: PsbtMapData[];
+    inputs: DecodePsbtInput[];
+    outputs: DecodePsbtOutput[];
+    fee?: bigint;
+}
+
+/**
+ * psbt witness utxo
+ * @property {bigint} amount - psbt witness utxo
+ */
+export interface DecodePsbtUtxo {
+    amount: bigint;
+    scriptPubKey?: DecodePsbtLockingScript;
 }
 
 /**
@@ -1330,6 +1460,54 @@ export interface FailSignTxIn {
 }
 
 /**
+ * Finalized psbt input data.
+ * @property {string} txid - utxo txid.
+ * @property {number} vout - utxo vout.
+ * @property {string} finalScriptsig? - final scriptsig
+ * @property {string[]} final_scriptwitness? - final witness stack
+ */
+export interface FinalizedPsbtInputData {
+    txid: string;
+    vout: number;
+    finalScriptsig?: string;
+    final_scriptwitness?: string[];
+}
+
+/**
+ * Finalize PSBT input request
+ * @property {string} psbt - psbt data (hex or base64)
+ * @property {FinalizedPsbtInputData[]} inputs - Finalized psbt input data.
+ */
+export interface FinalizePsbtInputRequest {
+    psbt: string;
+    inputs: FinalizedPsbtInputData[];
+}
+
+/**
+ * Finalize and extract PSBT request
+ * @property {string} psbt - psbt (hex or base64)
+ * @property {boolean} extract? - If true and the transaction is complete, extract and return the complete transaction in normal network serialization instead of the PSBT.
+ */
+export interface FinalizePsbtRequest {
+    psbt: string;
+    extract?: boolean;
+}
+
+/**
+ * The output finalize psbt data.
+ * @property {string} psbt - base64 encoded psbt.
+ * @property {string} hex - psbt hex
+ * @property {string} tx - If extracted, the transaction hex is set.
+ * @property {boolean} complete - If the transaction has a complete set of signatures.
+ */
+export interface FinalizePsbtResponse {
+    psbt: string;
+    hex: string;
+    tx: string;
+    complete: boolean;
+}
+
+/**
  * target amount data
  * @property {string} asset - target asset
  * @property {bigint | number} amount - Amount more than the specified amount is set in txout. default is 0 (disable).
@@ -1361,6 +1539,36 @@ export interface FundFeeInformation {
     isBlindEstimateFee?: boolean;
     exponent?: number;
     minimumBits?: number;
+}
+
+/**
+ * Request data for fund psbt.
+ * @property {string} psbt - psbt (hex or base64)
+ * @property {FundUtxoJsonData[]} utxos - utxo data.
+ * @property {string} network? - network type. (bitcoin:'mainnet, testnet, regtest'. elements:'liquidv1, regtest')
+ * @property {string} reservedDescriptor? - This descriptor use when append TxOut. Also serves as a change address descriptor. (This field is available only bitcoin.)
+ * @property {FundFeeInformation} feeInfo? - fee information
+ */
+export interface FundPsbtRequest {
+    psbt: string;
+    utxos: FundUtxoJsonData[];
+    network?: string;
+    reservedDescriptor?: string;
+    feeInfo?: FundFeeInformation;
+}
+
+/**
+ * Response data of fund transaction.
+ * @property {string} psbt - base64 encoded psbt.
+ * @property {string} hex - psbt hex
+ * @property {string[]} usedAddresses? - This address list was used to add TxOut.
+ * @property {bigint} feeAmount? - fee amount.
+ */
+export interface FundPsbtResponse {
+    psbt: string;
+    hex: string;
+    usedAddresses?: string[];
+    feeAmount?: bigint;
 }
 
 /**
@@ -1717,6 +1925,26 @@ export interface HashKeyData {
 }
 
 /**
+ * Request for hash message
+ * @property {string} algorithm - hash algorithm. (hash160, hash256, sha256, ripemd160)
+ * @property {string} message - Set hex string or text string.
+ * @property {boolean} hasText? - Specify true if the message is text string. (default: false)
+ */
+export interface HashMessageRequest {
+    algorithm: string;
+    message: string;
+    hasText?: boolean;
+}
+
+/**
+ * Hex data.
+ * @property {string} hex - hex string
+ */
+export interface HexData {
+    hex: string;
+}
+
+/**
  * Inner error information
  * @property {number} code - require
  * @property {string} type - require
@@ -1726,6 +1954,28 @@ export interface InnerErrorResponse {
     code: number;
     type: string;
     message: string;
+}
+
+/**
+ * Request to check finalized input.
+ * @property {string} psbt - psbt data (hex or base64)
+ * @property {OutPoint[]} outPointList? - OutPoint data.
+ */
+export interface IsFinalizedPsbtRequest {
+    psbt: string;
+    outPointList?: OutPoint[];
+}
+
+/**
+ * The output finalized check.
+ * @property {boolean} success - target all finalized flag.
+ * @property {boolean} finalizedAll - all finalized flag.
+ * @property {OutPoint[]} failInputs? - OutPoint data.
+ */
+export interface IsFinalizedPsbtResponse {
+    success: boolean;
+    finalizedAll: boolean;
+    failInputs?: OutPoint[];
 }
 
 /**
@@ -1766,6 +2016,16 @@ export interface IssuanceDataResponse {
     asset: string;
     entropy: string;
     token?: string;
+}
+
+/**
+ * OutPoint data.
+ * @property {string} txid - utxo txid.
+ * @property {number} vout - utxo vout.
+ */
+export interface OutPoint {
+    txid: string;
+    vout: number;
 }
 
 /**
@@ -1866,6 +2126,210 @@ export interface PrivkeyHexData {
  */
 export interface PrivkeyWifData {
     wif: string;
+}
+
+/**
+ * request for add psbt input.
+ * @property {TxInRequest} txin - This is added to the transaction input.
+ * @property {PsbtInputRequestData} input - psbt input data
+ */
+export interface PsbtAddInputRequest {
+    txin: TxInRequest;
+    input: PsbtInputRequestData;
+}
+
+/**
+ * request for add psbt output.
+ * @property {TxOutRequest} txout - This is added to the transaction output.
+ * @property {PsbtOutputRequestData} output - psbt output data
+ */
+export interface PsbtAddOutputRequest {
+    txout: TxOutRequest;
+    output: PsbtOutputRequestData;
+}
+
+/**
+ * psbt script data
+ * @property {string} pubkey - pubkey hex
+ * @property {string} master_fingerprint - master pubkey fingerprint.
+ * @property {string} path - bip32 path.
+ * @property {string} descriptor? - If hasDetail is true, the descriptor pubkey string is set.
+ */
+export interface PsbtBip32Data {
+    pubkey: string;
+    master_fingerprint: string;
+    path: string;
+    descriptor?: string;
+}
+
+/**
+ * psbt bip32 pubkey data
+ * @property {string} descriptor? - the descriptor pubkey string.
+ * @property {string} pubkey? - pubkey hex. If the descriptor set, this field not reference.
+ * @property {string} master_fingerprint? - master pubkey fingerprint. If the descriptor set, this field not reference.
+ * @property {string} path? - bip32 path. If the descriptor set, this field not reference.
+ */
+export interface PsbtBip32PubkeyInput {
+    descriptor?: string;
+    pubkey?: string;
+    master_fingerprint?: string;
+    path?: string;
+}
+
+/**
+ * psbt global request data.
+ * @property {PsbtGlobalXpubInput[]} xpubs? - psbt global xpub data
+ * @property {PsbtMapData[]} unknown? - psbt map data.
+ */
+export interface PsbtGlobalRequestData {
+    xpubs?: PsbtGlobalXpubInput[];
+    unknown?: PsbtMapData[];
+}
+
+/**
+ * psbt global xpub data
+ * @property {XpubData} xpub - xpub data
+ * @property {string} master_fingerprint - master pubkey fingerprint.
+ * @property {string} path - bip32 path.
+ * @property {string} descriptorXpub - the descriptor xpub string.
+ */
+export interface PsbtGlobalXpub {
+    xpub: XpubData;
+    master_fingerprint: string;
+    path: string;
+    descriptorXpub: string;
+}
+
+/**
+ * psbt global xpub data
+ * @property {string} descriptorXpub? - the descriptor xpub string.
+ * @property {string} xpub? - xpub (base58 or hex). If the descriptor set, this field not reference.
+ * @property {string} master_fingerprint? - master pubkey fingerprint. If the descriptor set, this field not reference.
+ * @property {string} path? - bip32 path. If the descriptor set, this field not reference.
+ */
+export interface PsbtGlobalXpubInput {
+    descriptorXpub?: string;
+    xpub?: string;
+    master_fingerprint?: string;
+    path?: string;
+}
+
+/**
+ * psbt input request.
+ * @property {OutPoint} outpoint? - outpoint.
+ * @property {number} index? - psbt input index. If the outpoint set, this field not reference.
+ * @property {PsbtInputRequestData} input - psbt input data
+ */
+export interface PsbtInputRequest {
+    outpoint?: OutPoint;
+    index?: number;
+    input: PsbtInputRequestData;
+}
+
+/**
+ * psbt input request data.
+ * @property {string} utxoFullTx? - utxo full tx hex. (for not witness utxo.)
+ * @property {TxOutRequest} witnessUtxo? - witness utxo data.
+ * @property {string} redeemScript? - redeem script or witness script
+ * @property {PsbtBip32PubkeyInput[]} bip32Derives? - psbt bip32 pubkey data
+ * @property {string} sighash? - sighash type (ALL, SINGLE, NONE)
+ * @property {PsbtSignatureData[]} partialSignature? - psbt signature data.
+ * @property {PsbtMapData[]} unknown? - psbt map data.
+ */
+export interface PsbtInputRequestData {
+    utxoFullTx?: string;
+    witnessUtxo?: TxOutRequest;
+    redeemScript?: string;
+    bip32Derives?: PsbtBip32PubkeyInput[];
+    sighash?: string;
+    partialSignature?: PsbtSignatureData[];
+    unknown?: PsbtMapData[];
+}
+
+/**
+ * psbt List.
+ * @property {string[]} psbts - psbt list data (hex or base64)
+ */
+export interface PsbtList {
+    psbts: string[];
+}
+
+/**
+ * psbt map data.
+ * @property {string} key - key hex
+ * @property {string} value - value hex
+ */
+export interface PsbtMapData {
+    key: string;
+    value: string;
+}
+
+/**
+ * psbt output data.
+ * @property {string} psbt - base64 encoded psbt.
+ * @property {string} hex - psbt hex
+ */
+export interface PsbtOutputData {
+    psbt: string;
+    hex: string;
+}
+
+/**
+ * psbt output request.
+ * @property {number} index - psbt output index.
+ * @property {PsbtOutputRequestData} output - psbt output data
+ */
+export interface PsbtOutputRequest {
+    index: number;
+    output: PsbtOutputRequestData;
+}
+
+/**
+ * psbt output request data.
+ * @property {string} redeemScript? - redeem script or witness script
+ * @property {PsbtBip32PubkeyInput[]} bip32Derives? - psbt bip32 pubkey data
+ * @property {PsbtMapData[]} unknown? - psbt map data.
+ */
+export interface PsbtOutputRequestData {
+    redeemScript?: string;
+    bip32Derives?: PsbtBip32PubkeyInput[];
+    unknown?: PsbtMapData[];
+}
+
+/**
+ * psbt record data.
+ * @property {number} index? - psbt input/output index. If type is global, this field not reference.
+ * @property {string} type - field type. (global, input, output)
+ * @property {string} key - key hex
+ * @property {string} value - value hex
+ */
+export interface PsbtRecordData {
+    index?: number;
+    type: string;
+    key: string;
+    value: string;
+}
+
+/**
+ * psbt script data
+ * @property {string} asm - script asm string
+ * @property {string} hex - script hex
+ * @property {string} type? - script type
+ */
+export interface PsbtScriptData {
+    asm: string;
+    hex: string;
+    type?: string;
+}
+
+/**
+ * psbt signature data.
+ * @property {string} pubkey? - pubkey hex
+ * @property {string} signature? - signature hex
+ */
+export interface PsbtSignatureData {
+    pubkey?: string;
+    signature?: string;
 }
 
 /**
@@ -2094,6 +2558,30 @@ export interface SerializeLedgerFormatTxOut {
 }
 
 /**
+ * request for set psbt record
+ * @property {string} psbt - psbt data (hex or base64)
+ * @property {PsbtRecordData[]} records - psbt record data.
+ */
+export interface SetPsbtRecordRequest {
+    psbt: string;
+    records: PsbtRecordData[];
+}
+
+/**
+ * request for set psbt data.
+ * @property {string} psbt - psbt data (hex or base64)
+ * @property {PsbtInputRequest[]} inputs? - psbt input request.
+ * @property {PsbtOutputRequest[]} outputs? - psbt output request.
+ * @property {PsbtGlobalRequestData} global? - psbt global data
+ */
+export interface SetPsbtRequest {
+    psbt: string;
+    inputs?: PsbtInputRequest[];
+    outputs?: PsbtOutputRequest[];
+    global?: PsbtGlobalRequestData;
+}
+
+/**
  * Request for set issue asset.
  * @property {string} tx - transaction hex
  * @property {boolean} isRandomSortTxOut? - txout random sort after adding transaction
@@ -2183,6 +2671,18 @@ export interface SignEcdsaAdaptorRequest {
 export interface SignEcdsaAdaptorResponse {
     adaptorSignature: string;
     proof: string;
+}
+
+/**
+ * Sign psbt data.
+ * @property {string} psbt - psbt data (hex or base64)
+ * @property {string} privkey - private key. hex or wif format.
+ * @property {boolean} hasGrindR? - grind-r option
+ */
+export interface SignPsbtRequest {
+    psbt: string;
+    privkey: string;
+    hasGrindR?: boolean;
 }
 
 /**
@@ -2429,6 +2929,14 @@ export interface UtxoJsonData {
 }
 
 /**
+ * The utxo list data.
+ * @property {FundUtxoJsonData[]} utxos - utxo data.
+ */
+export interface UtxoListData {
+    utxos: FundUtxoJsonData[];
+}
+
+/**
  * Request for verify signature
  * @property {string} adaptorSignature - adaptor signature hex.
  * @property {string} proof - adaptor proof.
@@ -2444,6 +2952,16 @@ export interface VerifyEcdsaAdaptorRequest {
     message: string;
     isHashed?: boolean;
     pubkey: string;
+}
+
+/**
+ * Request to verify psbt sign.
+ * @property {string} psbt - psbt data (hex or base64)
+ * @property {OutPoint[]} outPointList? - OutPoint data.
+ */
+export interface VerifyPsbtSignRequest {
+    psbt: string;
+    outPointList?: OutPoint[];
 }
 
 /**
@@ -2544,6 +3062,16 @@ export interface WitnessStackData {
     sighashAnyoneCanPay?: boolean;
 }
 
+/**
+ * xpub data
+ * @property {string} base58 - xpub base58 string
+ * @property {string} hex - xpub hex string
+ */
+export interface XpubData {
+    base58: string;
+    hex: string;
+}
+
 /** function definition class. */
 export class Cfdjs {
     /**
@@ -2558,6 +3086,12 @@ export class Cfdjs {
      * @return {Promise<RawTransactionResponse>} - response data.
      */
     AddMultisigSign(jsonObject: AddMultisigSignRequest): Promise<RawTransactionResponse>;
+    /**
+     * Add psbt input/output data.
+     * @param {AddPsbtDataRequest} jsonObject - request data.
+     * @return {Promise<PsbtOutputData>} - response data.
+     */
+    AddPsbtData(jsonObject: AddPsbtDataRequest): Promise<PsbtOutputData>;
     /**
      * Add a signature and pubkey to the transaction.
      * @param {AddPubkeyHashSignRequest} jsonObject - request data.
@@ -2607,6 +3141,12 @@ export class Cfdjs {
      */
     CheckTweakedSchnorrPubkey(jsonObject: CheckTweakedSchnorrPubkeyRequest): Promise<VerifySignatureResponse>;
     /**
+     * Combine psbt.
+     * @param {PsbtList} jsonObject - request data.
+     * @return {Promise<PsbtOutputData>} - response data.
+     */
+    CombinePsbt(jsonObject: PsbtList): Promise<PsbtOutputData>;
+    /**
      * Combine pubkey.
      * @param {PubkeyListData} jsonObject - request data.
      * @return {Promise<PubkeyData>} - response data.
@@ -2636,6 +3176,12 @@ export class Cfdjs {
      * @return {Promise<ConvertMnemonicToSeedResponse>} - response data.
      */
     ConvertMnemonicToSeed(jsonObject: ConvertMnemonicToSeedRequest): Promise<ConvertMnemonicToSeedResponse>;
+    /**
+     * Convert transaction to PSBT.
+     * @param {ConvertToPsbtRequest} jsonObject - request data.
+     * @return {Promise<PsbtOutputData>} - response data.
+     */
+    ConvertToPsbt(jsonObject: ConvertToPsbtRequest): Promise<PsbtOutputData>;
     /**
      * Create address.
      * @param {CreateAddressRequest} jsonObject - request data.
@@ -2721,6 +3267,12 @@ export class Cfdjs {
      */
     CreatePegInAddress(jsonObject: CreatePegInAddressRequest): Promise<CreatePegInAddressResponse>;
     /**
+     * Create transaction
+     * @param {CreateRawTransactionRequest} jsonObject - request data.
+     * @return {Promise<PsbtOutputData>} - response data.
+     */
+    CreatePsbt(jsonObject: CreateRawTransactionRequest): Promise<PsbtOutputData>;
+    /**
      * Create pegin transaction
      * @param {CreateRawPeginRequest} jsonObject - request data.
      * @return {Promise<RawTransactionResponse>} - response data.
@@ -2757,11 +3309,22 @@ export class Cfdjs {
      */
     DecodeBase58(jsonObject: DecodeBase58Request): Promise<DecodeBase58Response>;
     /**
+     * decode base64
+     * @param {Base64Data} jsonObject - request data.
+     * @return {Promise<HexData>} - response data.
+     */
+    DecodeBase64(jsonObject: Base64Data): Promise<HexData>;
+    /**
      * Decode der-encoded signature.
      * @param {DecodeDerSignatureToRawRequest} jsonObject - request data.
      * @return {Promise<SignatureDataResponse>} - response data.
      */
     DecodeDerSignatureToRaw(jsonObject: DecodeDerSignatureToRawRequest): Promise<SignatureDataResponse>;
+    /**
+     * @param {DecodePsbtRequest} jsonObject - request data.
+     * @return {Promise<DecodePsbtResponse>} - response data.
+     */
+    DecodePsbt(jsonObject: DecodePsbtRequest): Promise<DecodePsbtResponse>;
     /**
      * Decode transaction
      * @param {DecodeRawTransactionRequest} jsonObject - request data.
@@ -2793,6 +3356,12 @@ export class Cfdjs {
      */
     EncodeBase58(jsonObject: EncodeBase58Request): Promise<EncodeBase58Response>;
     /**
+     * encode base64
+     * @param {HexData} jsonObject - request data.
+     * @return {Promise<Base64Data>} - response data.
+     */
+    EncodeBase64(jsonObject: HexData): Promise<Base64Data>;
+    /**
      * Encode signature by der.
      * @param {EncodeSignatureByDerRequest} jsonObject - request data.
      * @return {Promise<EncodeSignatureByDerResponse>} - response data.
@@ -2810,6 +3379,24 @@ export class Cfdjs {
      * @return {Promise<SecretData>} - response data.
      */
     ExtractSecretEcdsaAdaptor(jsonObject: ExtractSecretEcdsaAdaptorRequest): Promise<SecretData>;
+    /**
+     * Finalize and extract PSBT.
+     * @param {FinalizePsbtRequest} jsonObject - request data.
+     * @return {Promise<FinalizePsbtResponse>} - response data.
+     */
+    FinalizePsbt(jsonObject: FinalizePsbtRequest): Promise<FinalizePsbtResponse>;
+    /**
+     * Finalize PSBT with input.
+     * @param {FinalizePsbtInputRequest} jsonObject - request data.
+     * @return {Promise<PsbtOutputData>} - response data.
+     */
+    FinalizePsbtInput(jsonObject: FinalizePsbtInputRequest): Promise<PsbtOutputData>;
+    /**
+     * Fund psbt.
+     * @param {FundPsbtRequest} jsonObject - request data.
+     * @return {Promise<FundPsbtResponse>} - response data.
+     */
+    FundPsbt(jsonObject: FundPsbtRequest): Promise<FundPsbtResponse>;
     /**
      * Fund transaction.
      * @param {FundRawTransactionRequest} jsonObject - request data.
@@ -2889,6 +3476,12 @@ export class Cfdjs {
      */
     GetPrivkeyWif(jsonObject: PrivkeyHexData): Promise<PrivkeyWifData>;
     /**
+     * Get psbt utxo list.
+     * @param {DecodePsbtRequest} jsonObject - request data.
+     * @return {Promise<UtxoListData>} - response data.
+     */
+    GetPsbtUtxos(jsonObject: DecodePsbtRequest): Promise<UtxoListData>;
+    /**
      * Get pubkey from extkey.
      * @param {GetPubkeyFromExtkeyRequest} jsonObject - request data.
      * @return {Promise<PubkeyData>} - response data.
@@ -2935,6 +3528,24 @@ export class Cfdjs {
      * @return {Promise<GetWitnessStackNumResponse>} - response data.
      */
     GetWitnessStackNum(jsonObject: GetWitnessStackNumRequest): Promise<GetWitnessStackNumResponse>;
+    /**
+     * hash message
+     * @param {HashMessageRequest} jsonObject - request data.
+     * @return {Promise<HexData>} - response data.
+     */
+    HashMessage(jsonObject: HashMessageRequest): Promise<HexData>;
+    /**
+     * Is finalized psbt.
+     * @param {IsFinalizedPsbtRequest} jsonObject - request data.
+     * @return {Promise<IsFinalizedPsbtResponse>} - response data.
+     */
+    IsFinalizedPsbt(jsonObject: IsFinalizedPsbtRequest): Promise<IsFinalizedPsbtResponse>;
+    /**
+     * Join psbt.
+     * @param {PsbtList} jsonObject - request data.
+     * @return {Promise<PsbtOutputData>} - response data.
+     */
+    JoinPsbts(jsonObject: PsbtList): Promise<PsbtOutputData>;
     /**
      * Negate privkey.
      * @param {PrivkeyData} jsonObject - request data.
@@ -2984,6 +3595,18 @@ export class Cfdjs {
      */
     SerializeLedgerFormat(jsonObject: SerializeLedgerFormatRequest): Promise<SerializeLedgerFormatResponse>;
     /**
+     * Set psbt data.
+     * @param {SetPsbtRequest} jsonObject - request data.
+     * @return {Promise<PsbtOutputData>} - response data.
+     */
+    SetPsbtData(jsonObject: SetPsbtRequest): Promise<PsbtOutputData>;
+    /**
+     * Set psbt records.
+     * @param {SetPsbtRecordRequest} jsonObject - request data.
+     * @return {Promise<PsbtOutputData>} - response data.
+     */
+    SetPsbtRecord(jsonObject: SetPsbtRecordRequest): Promise<PsbtOutputData>;
+    /**
      * Set issue asset.
      * @param {SetRawIssueAssetRequest} jsonObject - request data.
      * @return {Promise<SetRawIssueAssetResponse>} - response data.
@@ -3001,6 +3624,12 @@ export class Cfdjs {
      * @return {Promise<SignEcdsaAdaptorResponse>} - response data.
      */
     SignEcdsaAdaptor(jsonObject: SignEcdsaAdaptorRequest): Promise<SignEcdsaAdaptorResponse>;
+    /**
+     * Sign psbt with privkey.
+     * @param {SignPsbtRequest} jsonObject - request data.
+     * @return {Promise<PsbtOutputData>} - response data.
+     */
+    SignPsbt(jsonObject: SignPsbtRequest): Promise<PsbtOutputData>;
     /**
      * Add sign and set pubkey hash input
      * @param {SignWithPrivkeyRequest} jsonObject - request data.
@@ -3067,6 +3696,12 @@ export class Cfdjs {
      * @return {Promise<VerifySignatureResponse>} - response data.
      */
     VerifyEcdsaAdaptor(jsonObject: VerifyEcdsaAdaptorRequest): Promise<VerifySignatureResponse>;
+    /**
+     * Verify the sign of psbt.
+     * @param {VerifyPsbtSignRequest} jsonObject - request data.
+     * @return {Promise<VerifySignResponse>} - response data.
+     */
+    VerifyPsbtSign(jsonObject: VerifyPsbtSignRequest): Promise<VerifySignResponse>;
     /**
      * Verify transaction sign. (only pubkey hash or multisig script.)
      * @param {VerifySignRequest} jsonObject - request data.
