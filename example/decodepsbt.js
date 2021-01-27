@@ -10,7 +10,7 @@ const updateField = async function(event) {
 
   try {
     const req = {
-      hex: inputTx.value,
+      psbt: inputTx.value,
       network,
       hasDetail: detail.checked,
       hasSimple: simple.checked,
