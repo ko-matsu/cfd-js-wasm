@@ -1412,6 +1412,53 @@
                 }
             },
             {
+                "case": "global xpub field",
+                "request": {
+                    "psbt": "cHNidP8BAEgCAAAAAAIA4fUFAAAAABYAFLMivdzmM7hRrHNwq0VPCzZ6BlTlAOH1BQAAAAAWABTKuMU6bo/AKW0c05FaMH1RxJGlVQAAAABPAQSIsh4EpTqP8wAAACyDn7DWbxiH2xZ83FMKuY6HHYsBfryxmFaIdLbJhRY2TgPx52fAVVzgEFsqdtD4sZttM6FH+C91oFxMCVgMOWlP0wy3Zll4AAAAACwAAABPAQSIsh4Gkf5NKYAAACyyaggAhyPMjxmsCLzmNcCH1j1zi2PDPmIYbUPPOlgF8wLpFWYgtbKegnLobx2B+wfWxXxVfLwlIY394zq4zqBrewyuBdu3AAAAACwAAIAN/ANjZmQABmR1bW15MQQBAgMEDfwDY2ZkAAZkdW1teTIBAAAAAA==",
+                    "hasDetail": true,
+                    "hasSimple": true
+                },
+                "expect": {
+                    "tx_hex": "02000000000200e1f50500000000160014b322bddce633b851ac7370ab454f0b367a0654e500e1f50500000000160014cab8c53a6e8fc0296d1cd3915a307d51c491a55500000000",
+                    "xpubs": [
+                        {
+                            "xpub": {
+                                "base58": "xpub6EkLrUTiaMiLbMAkbLN2BdH4hWkCQT7fLQf3Q6Ymx3gAqbuFeSKHfTMVDtjcsuRtEFqJbAsjYFZMrqeDLgRSsn4yuQygK44HWPrnA7gZC2C",
+                                "hex": "0488b21e04a53a8ff30000002c839fb0d66f1887db167cdc530ab98e871d8b017ebcb198568874b6c98516364e03f1e767c0555ce0105b2a76d0f8b19b6d33a147f82f75a05c4c09580c39694fd3"
+                            },
+                            "master_fingerprint": "b7665978",
+                            "path": "0/44",
+                            "descriptorXpub": "[b7665978/0/44]03f1e767c0555ce0105b2a76d0f8b19b6d33a147f82f75a05c4c09580c39694fd3"
+                        },
+                        {
+                            "xpub": {
+                                "base58": "xpub6JNQxQDHv2vcUQiXjggbaGYZg3nmxX6ojMcJPSs4KfLSLnMBCg8VbJUh5n4to2SwLWXdSXnHBkUQx1fVnJ9oKYjPPYAQehjWRpx6ErQyykX",
+                                "hex": "0488b21e0691fe4d298000002cb26a08008723cc8f19ac08bce635c087d63d738b63c33e62186d43cf3a5805f302e9156620b5b29e8272e86f1d81fb07d6c57c557cbc25218dfde33ab8cea06b7b"
+                            },
+                            "master_fingerprint": "ae05dbb7",
+                            "path": "0/44'",
+                            "descriptorXpub": "[ae05dbb7/0/44']02e9156620b5b29e8272e86f1d81fb07d6c57c557cbc25218dfde33ab8cea06b7b"
+                        }
+                    ],
+                    "version": 0,
+                    "unknown": [
+                        {
+                            "key": "fc03636664000664756d6d7931",
+                            "value": "01020304"
+                        },
+                        {
+                            "key": "fc03636664000664756d6d7932",
+                            "value": "00"
+                        }
+                    ],
+                    "inputs": [],
+                    "outputs": [
+                        {},
+                        {}
+                    ]
+                }
+            },
+            {
                 "case": "global unknown field",
                 "request": {
                     "psbt": "cHNidP8BAJoCAAAAAiZ//Xbq5rbBP/uGzquqJNQkhVICM8LDgF4K12RwlXjAAQAAAAD/////fSVGKkL/LLG6VAHliTJZ2zykvPXParlxXTUWPTHJ7MAAAAAAAP////8CAOH1BQAAAAAWABSzIr3c5jO4UaxzcKtFTws2egZU5QDh9QUAAAAAFgAUyrjFOm6PwCltHNORWjB9UcSRpVUAAAAADfwDY2ZkAAZkdW1teTEEAQIDBA38A2NmZAAGZHVtbXkyAQAAAAAAAA==",
@@ -1612,8 +1659,8 @@
                     ]
                 },
                 "expect": {
-                    "psbt": "cHNidP8BAAoCAAAAAAAAAAAAAA==",
-                    "hex": "70736274ff01000a0200000000000000000000"
+                    "psbt": "cHNidP8BADUCAAAAAAEAAAAAAAAAACIAIMWuT/F87AVelktXNgEyjz+Hn6RB5T74is39TY6N9CnvAAAAAAAA",
+                    "hex": "70736274ff0100350200000000010000000000000000220020c5ae4ff17cec055e964b573601328f3f879fa441e53ef88acdfd4d8e8df429ef000000000000"
                 }
             },
             {
@@ -1904,7 +1951,8 @@
                     ]
                 },
                 "error": {
-                    "cfd": "transaction data invalid."
+                    "cfd": "transaction data invalid.",
+                    "python": "Error: Invalid txid."
                 }
             }
         ]
@@ -1938,8 +1986,8 @@
                     "tx": "0200000000010000000000000000220020c5ae4ff17cec055e964b573601328f3f879fa441e53ef88acdfd4d8e8df429ef00000000"
                 },
                 "expect": {
-                    "psbt": "cHNidP8BAAoCAAAAAAAAAAAAAA==",
-                    "hex": "70736274ff01000a0200000000000000000000"
+                    "psbt": "cHNidP8BADUCAAAAAAEAAAAAAAAAACIAIMWuT/F87AVelktXNgEyjz+Hn6RB5T74is39TY6N9CnvAAAAAAAA",
+                    "hex": "70736274ff0100350200000000010000000000000000220020c5ae4ff17cec055e964b573601328f3f879fa441e53ef88acdfd4d8e8df429ef000000000000"
                 }
             },
             {
@@ -2071,7 +2119,8 @@
                     "permitSigData": false
                 },
                 "error": {
-                    "message": "tx inputs must not have scriptSigs and witness stacks."
+                    "message": "tx inputs must not have scriptSigs and witness stacks.",
+                    "python": "Error: tx inputs must not have scriptSigs and witness stacks."
                 }
             },
             {
@@ -2081,7 +2130,8 @@
                     "permitSigData": false
                 },
                 "error": {
-                    "message": "tx inputs must not have scriptSigs and witness stacks."
+                    "message": "tx inputs must not have scriptSigs and witness stacks.",
+                    "python": "Error: tx inputs must not have scriptSigs and witness stacks."
                 }
             }
         ]
@@ -2717,11 +2767,13 @@
                     "records": [
                         {
                             "type": "input",
+                            "index": 0,
                             "key": "fc03636664000664756d6d7931",
                             "value": "01020304"
                         },
                         {
                             "type": "input",
+                            "index": 0,
                             "key": "fc03636664000664756d6d7932",
                             "value": "00"
                         }
@@ -2733,17 +2785,43 @@
                 }
             },
             {
+                "case": "input data (index=1)",
+                "request": {
+                    "psbt": "cHNidP8BAFwCAAAAAiZ//Xbq5rbBP/uGzquqJNQkhVICM8LDgF4K12RwlXjAAQAAAAD/////fSVGKkL/LLG6VAHliTJZ2zykvPXParlxXTUWPTHJ7MAAAAAAAP////8AAAAAAAABAPYCAAAAAAEB8Zk/6OcYlULuRQYljhcCAb4pJwPNJ1rLCezhZnL9hIsAAAAAFxYAFKye+AsnrxydlcHbXXYTGTIrxC/F/////wIIBBAkAQAAABYAFAneKgQxy7NET8IsrZ2aD9CWOXIQAOH1BQAAAAAXqRRQn1mF9OkKFPuQ45MW/bTzrJdTB4cCRzBEAiAeB99yHDMiQZ6PNtB+6uR5WXW6DZ0ZYwyjzT3A1JZxcgIgFUKOe+BrZWdQFTkFC9eRo4DwC73bxQl+qXunvkAXEUoBIQJK70Ox1ax7pQFJmNY86sWDlZ0f3GbqJpnNhO6vgqKDBgAAAAABASAA4fUFAAAAABepFFCfWYX06QoU+5Djkxb9tPOsl1MHhwEDBAEAAAABBBYAFJYsTgjzNtOvvDQVydNZrhBARwUgIgYCVlJIRgs8GG3s8T2wbwck/VC0fMPkicMAdsg2PVA4zv4YKnBHYCwAAIAAAACAAAAAgAEAAAABAAAAAAEAvwIAAAABxtLqNuLoArUt2sZl2svtL4MbUmNFnhynNPXJRddRXkAAAAAAakcwRAIgEblsfS0NLo3LNxOOGKzEYHUpZa3Zy4eH31w0nfDirmYCIC6TrzG2T1Fm5WBYGVVdq+xXvnlDAPrbNwUvMd3eqZBcASED49JEo5Z+C4d2X9qGxf84iF90mTlTuVhDiK7zCyavauz/////AXhRzR0AAAAAGXapFI0gRDqRlp47yg4kDND/5NyYxj3iiKwAAAAAIgYC2faIjyhaFaahiAoiAsKyMKQtd89i2mpIrKQZgmLNo8cYnWtthiwAAIAAAACAAAAAgAAAAAABAAAAAA==",
+                    "records": [
+                        {
+                            "type": "input",
+                            "index": 1,
+                            "key": "fc03636664000664756d6d7931",
+                            "value": "01020304"
+                        },
+                        {
+                            "type": "input",
+                            "index": 1,
+                            "key": "fc03636664000664756d6d7932",
+                            "value": "00"
+                        }
+                    ]
+                },
+                "expect": {
+                    "psbt": "cHNidP8BAFwCAAAAAiZ//Xbq5rbBP/uGzquqJNQkhVICM8LDgF4K12RwlXjAAQAAAAD/////fSVGKkL/LLG6VAHliTJZ2zykvPXParlxXTUWPTHJ7MAAAAAAAP////8AAAAAAAABAPYCAAAAAAEB8Zk/6OcYlULuRQYljhcCAb4pJwPNJ1rLCezhZnL9hIsAAAAAFxYAFKye+AsnrxydlcHbXXYTGTIrxC/F/////wIIBBAkAQAAABYAFAneKgQxy7NET8IsrZ2aD9CWOXIQAOH1BQAAAAAXqRRQn1mF9OkKFPuQ45MW/bTzrJdTB4cCRzBEAiAeB99yHDMiQZ6PNtB+6uR5WXW6DZ0ZYwyjzT3A1JZxcgIgFUKOe+BrZWdQFTkFC9eRo4DwC73bxQl+qXunvkAXEUoBIQJK70Ox1ax7pQFJmNY86sWDlZ0f3GbqJpnNhO6vgqKDBgAAAAABASAA4fUFAAAAABepFFCfWYX06QoU+5Djkxb9tPOsl1MHhwEDBAEAAAABBBYAFJYsTgjzNtOvvDQVydNZrhBARwUgIgYCVlJIRgs8GG3s8T2wbwck/VC0fMPkicMAdsg2PVA4zv4YKnBHYCwAAIAAAACAAAAAgAEAAAABAAAAAAEAvwIAAAABxtLqNuLoArUt2sZl2svtL4MbUmNFnhynNPXJRddRXkAAAAAAakcwRAIgEblsfS0NLo3LNxOOGKzEYHUpZa3Zy4eH31w0nfDirmYCIC6TrzG2T1Fm5WBYGVVdq+xXvnlDAPrbNwUvMd3eqZBcASED49JEo5Z+C4d2X9qGxf84iF90mTlTuVhDiK7zCyavauz/////AXhRzR0AAAAAGXapFI0gRDqRlp47yg4kDND/5NyYxj3iiKwAAAAAIgYC2faIjyhaFaahiAoiAsKyMKQtd89i2mpIrKQZgmLNo8cYnWtthiwAAIAAAACAAAAAgAAAAAABAAAADfwDY2ZkAAZkdW1teTEEAQIDBA38A2NmZAAGZHVtbXkyAQAA",
+                    "hex": "70736274ff01005c0200000002267ffd76eae6b6c13ffb86ceabaa24d42485520233c2c3805e0ad764709578c00100000000ffffffff7d25462a42ff2cb1ba5401e5893259db3ca4bcf5cf6ab9715d35163d31c9ecc00000000000ffffffff0000000000000100f602000000000101f1993fe8e7189542ee4506258e170201be292703cd275acb09ece16672fd848b0000000017160014ac9ef80b27af1c9d95c1db5d761319322bc42fc5ffffffff02080410240100000016001409de2a0431cbb3444fc22cad9d9a0fd09639721000e1f5050000000017a914509f5985f4e90a14fb90e39316fdb4f3ac975307870247304402201e07df721c3322419e8f36d07eeae4795975ba0d9d19630ca3cd3dc0d4967172022015428e7be06b6567501539050bd791a380f00bbddbc5097ea97ba7be4017114a0121024aef43b1d5ac7ba5014998d63ceac583959d1fdc66ea2699cd84eeaf82a283060000000001012000e1f5050000000017a914509f5985f4e90a14fb90e39316fdb4f3ac97530787010304010000000104160014962c4e08f336d3afbc3415c9d359ae1040470520220602565248460b3c186decf13db06f0724fd50b47cc3e489c30076c8363d5038cefe182a7047602c00008000000080000000800100000001000000000100bf0200000001c6d2ea36e2e802b52ddac665dacbed2f831b5263459e1ca734f5c945d7515e40000000006a473044022011b96c7d2d0d2e8dcb37138e18acc460752965add9cb8787df5c349df0e2ae6602202e93af31b64f5166e5605819555dabec57be794300fadb37052f31dddea9905c012103e3d244a3967e0b87765fda86c5ff38885f74993953b9584388aef30b26af6aecffffffff017851cd1d000000001976a9148d20443a91969e3bca0e240cd0ffe4dc98c63de288ac00000000220602d9f6888f285a15a6a1880a2202c2b230a42d77cf62da6a48aca4198262cda3c7189d6b6d862c000080000000800000008000000000010000000dfc03636664000664756d6d793104010203040dfc03636664000664756d6d7932010000"
+                }
+            },
+            {
                 "case": "output data",
                 "request": {
                     "psbt": "cHNidP8BAEgCAAAAAAIA4fUFAAAAABYAFLMivdzmM7hRrHNwq0VPCzZ6BlTlAOH1BQAAAAAWABTKuMU6bo/AKW0c05FaMH1RxJGlVQAAAAAAIgIDRzv8jHcMGyIKLnquS632wNfq8pAo1bKdNDgBK7KJ74EYKnBHYCwAAIAAAACAAAAAgAAAAAACAAAAACICA2R0r/JjPDUYZVOftStiudb7nk4jV2Yo4fCgp5k0WOBsGJ1rbYYsAACAAAAAgAAAAIAAAAAAAgAAAAA=",
                     "records": [
                         {
                             "type": "output",
+                            "index": 0,
                             "key": "fc03636664000664756d6d7931",
                             "value": "01020304"
                         },
                         {
                             "type": "output",
+                            "index": 0,
                             "key": "fc03636664000664756d6d7932",
                             "value": "00"
                         }
