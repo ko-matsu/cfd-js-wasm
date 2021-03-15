@@ -116,7 +116,7 @@ class TestHelper {
                 throw e;
               }
             }
-            testCheckFunc(resp, testCase.expect, testCase.error);
+            await Promise.resolve(testCheckFunc(resp, testCase.expect, testCase.error, cfd));
           });
           afterEach(async () => {
             await teardownFunc();
