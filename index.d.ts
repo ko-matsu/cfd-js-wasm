@@ -110,14 +110,16 @@ export interface AddScriptHashSignRequest {
  * script hash input data
  * @property {string} txid - utxo txid.
  * @property {number} vout - utxo vout.
- * @property {SignData[]} signParam - The sign data.
+ * @property {SignData[]} signParams - The sign data.
+ * @property {SignData[]} signParam? - The sign data.
  * @property {string} redeemScript - redeem script.
  * @property {string} hashType - hash type. (p2sh, p2wsh or p2sh-p2wsh)
  */
 export interface AddScriptHashSignTxInRequest {
     txid: string;
     vout: number;
-    signParam: SignData[];
+    signParams: SignData[];
+    signParam?: SignData[];
     redeemScript: string;
     hashType: string;
 }
@@ -139,15 +141,77 @@ export interface AddSignRequest {
  * @property {string} txid - utxo txid.
  * @property {number} vout - utxo vout.
  * @property {boolean} isWitness? - use witness stack flag.
- * @property {SignData[]} signParam - The sign data.
+ * @property {SignData[]} signParams - The sign data.
+ * @property {SignData[]} signParam? - The sign data.
  * @property {boolean} clearStack? - Clear the stack before addSign. If isWitness is false, clearStack is forced to be true.
  */
 export interface AddSignTxInRequest {
     txid: string;
     vout: number;
     isWitness?: boolean;
-    signParam: SignData[];
+    signParams: SignData[];
+    signParam?: SignData[];
     clearStack?: boolean;
+}
+
+/**
+ * taproot input data to add to tx.
+ * @property {boolean} isElements? - elements transaction flag.
+ * @property {string} tx - transaction hex
+ * @property {AddTaprootSchnorrSignTxInRequest} txin - transaction input data
+ */
+export interface AddTaprootSchnorrSignRequest {
+    isElements?: boolean;
+    tx: string;
+    txin: AddTaprootSchnorrSignTxInRequest;
+}
+
+/**
+ * taprootinput data
+ * @property {string} txid - utxo txid.
+ * @property {number} vout - utxo vout.
+ * @property {string} signature - sign hex.
+ * @property {string} sighashType? - signature hash type. (default, all, none or single)
+ * @property {boolean} sighashAnyoneCanPay? - sighashType anyone can pay flag.
+ * @property {string} annex? - taproot annex bytes.
+ */
+export interface AddTaprootSchnorrSignTxInRequest {
+    txid: string;
+    vout: number;
+    signature: string;
+    sighashType?: string;
+    sighashAnyoneCanPay?: boolean;
+    annex?: string;
+}
+
+/**
+ * tapscript input data to add to tx.
+ * @property {boolean} isElements? - elements transaction flag.
+ * @property {string} tx - transaction hex
+ * @property {AddTapscriptSignTxInRequest} txin - transaction input data
+ */
+export interface AddTapscriptSignRequest {
+    isElements?: boolean;
+    tx: string;
+    txin: AddTapscriptSignTxInRequest;
+}
+
+/**
+ * tapscript input data
+ * @property {string} txid - utxo txid.
+ * @property {number} vout - utxo vout.
+ * @property {TapScriptSignData[]} signParams - tapscript sign data.
+ * @property {string} tapscript - tapscript.
+ * @property {string} controlBlock - tapscript control block.
+ * @property {string} annex? - taproot annex bytes.
+ */
+export interface AddTapscriptSignTxInRequest {
+    txid: string;
+    vout: number;
+    signParams: TapScriptSignData[];
+    tapscript: string;
+    controlBlock: string;
+    annex?: string;
 }
 
 /**
@@ -399,7 +463,7 @@ export interface ConvertToPsbtRequest {
  * @property {boolean} isElements? - elements transaction flag.
  * @property {HashKeyData} keyData? - address's base data.
  * @property {string} network - network type. (bitcoin:'mainnet, testnet, regtest'. elements:'liquidv1, regtest')
- * @property {string} hashType - hash type. (p2wpkh, p2wsh, p2pkh, p2sh, p2sh-p2wpkh, p2sh-p2wsh)
+ * @property {string} hashType - hash type. (p2wpkh, p2wsh, p2pkh, p2sh, p2sh-p2wpkh, p2sh-p2wsh, taproot)
  */
 export interface CreateAddressRequest {
     isElements?: boolean;
@@ -1699,7 +1763,7 @@ export interface GetAddressInfoRequest {
  * Response of get address information.
  * @property {string} lockingScript - locking script
  * @property {string} network - network type (bitcoin:'mainnet, testnet, regtest'. elements:'liquidv1, regtest')
- * @property {string} hashType - hash type (p2wpkh, p2pkh, p2wsh, p2sh(contain p2sh-segwit))
+ * @property {string} hashType - hash type (p2wpkh, p2pkh, p2wsh, p2sh(contain p2sh-segwit), taproot)
  * @property {number} witnessVersion? - witness version. (none:field empty, versionX:X(0 - 16))
  * @property {string} hash? - pubkey-hash or script-hash. p2wsh:32byte, other:20byte
  */
@@ -1870,6 +1934,42 @@ export interface GetSchnorrPubkeyFromPrivkeyRequest {
 }
 
 /**
+ * Request for get signature hash.
+ * @property {string} tx - transaction hex
+ * @property {boolean} isElements? - elements transaction flag.
+ * @property {GetSighashTxIn} txin - txin data
+ * @property {UtxoObject[]} utxos - UTXO data.
+ */
+export interface GetSighashRequest {
+    tx: string;
+    isElements?: boolean;
+    txin: GetSighashTxIn;
+    utxos: UtxoObject[];
+}
+
+/**
+ * txin data
+ * @property {string} txid - utxo txid
+ * @property {number} vout - utxo vout
+ * @property {HashKeyData} keyData - key data
+ * @property {string} hashType - hash type (taproot, p2wpkh, p2wsh, p2pkh, p2sh, p2sh-p2wpkh, p2sh-p2wsh)
+ * @property {string} sighashType? - signature hash type. (default(for taproot), all, none, single)
+ * @property {boolean} sighashAnyoneCanPay? - sighashType anyone can pay flag.
+ * @property {string} annex? - taproot annex bytes.
+ * @property {bigint | number} codeSeparatorPosition? - (for tapscript) OP_CODESEPARATOR position.
+ */
+export interface GetSighashTxIn {
+    txid: string;
+    vout: number;
+    keyData: HashKeyData;
+    hashType: string;
+    sighashType?: string;
+    sighashAnyoneCanPay?: boolean;
+    annex?: string;
+    codeSeparatorPosition?: bigint | number;
+}
+
+/**
  * Request for get supported function.
  * @property {boolean} bitcoin - bitcoin support flag
  * @property {boolean} elements - elements support flag
@@ -1877,6 +1977,22 @@ export interface GetSchnorrPubkeyFromPrivkeyRequest {
 export interface GetSupportedFunctionResponse {
     bitcoin: boolean;
     elements: boolean;
+}
+
+/**
+ * Request for get tapscript info.
+ * @property {string} network? - network type (bitcoin:'mainnet, testnet, regtest'. elements:'liquidv1, regtest')
+ * @property {boolean} isElements? - elements transaction flag.
+ * @property {string} internalPubkey? - internal schnorr pubkey.
+ * @property {string} internalPrivkey? - internal privkey. Specify only when it is necessary to calculate.
+ * @property {TapBranchData[]} tree - TapBranch data.
+ */
+export interface GetTapScriptTreeInfoRequest {
+    network?: string;
+    isElements?: boolean;
+    internalPubkey?: string;
+    internalPrivkey?: string;
+    tree: TapBranchData[];
 }
 
 /**
@@ -2350,12 +2466,12 @@ export interface PubkeyListData {
 
 /**
  * pubkey signature data.
- * @property {string} hex - signature hex.
- * @property {string} type? - parameter type. (sign only)
- * @property {boolean} derEncode? - der encode option flag
- * @property {string} sighashType? - signature hash type. (all, none or single)
- * @property {boolean} sighashAnyoneCanPay? - sighashType anyone can pay flag.
- * @property {string} relatedPubkey? - a pubkey related to signature.
+ * @property {string} hex - signature hex
+ * @property {string} type? - hex data type (sign only)
+ * @property {boolean} derEncode? - use der-encode
+ * @property {string} sighashType? - sighash type (all, none or single)
+ * @property {boolean} sighashAnyoneCanPay? - sighash anyone can pay flag
+ * @property {string} relatedPubkey? - related pubkey
  */
 export interface PubkeySignData {
     hex: string;
@@ -2689,11 +2805,13 @@ export interface SignPsbtRequest {
  * Request for add sign with privkey
  * @property {boolean} isElements? - elements transaction flag.
  * @property {string} tx - transaction hex
+ * @property {UtxoObject[]} utxos? - UTXO data.
  */
 export interface SignWithPrivkeyRequest {
     isElements?: boolean;
     tx: string;
     txin?: SignWithPrivkeyTxInRequest;
+    utxos?: UtxoObject[];
 }
 
 /**
@@ -2701,12 +2819,14 @@ export interface SignWithPrivkeyRequest {
  * @property {number} vout - utxo vout
  * @property {string} privkey - private key. hex or wif format.
  * @property {string} pubkey? - public key. if empty, generate from privkey.
- * @property {string} hashType - hash type (p2pkh, p2wpkh or p2sh-p2wpkh)
- * @property {string} sighashType? - signature hash type. (all, none or single)
+ * @property {string} hashType - hash type (taproot, p2pkh, p2wpkh or p2sh-p2wpkh)
+ * @property {string} sighashType? - signature hash type. (default(for taproot), all, none or single)
  * @property {boolean} sighashAnyoneCanPay? - sighashType anyone can pay flag.
- * @property {bigint | number} amount? - satoshi amount (need either amount or confidentialValueCommitment)
- * @property {string} confidentialValueCommitment? - value commitment. (need either amount or confidentialValueCommitment)
+ * @property {bigint | number} amount? - satoshi amount. Use only when utxos is not set. (need either amount or confidentialValueCommitment)
+ * @property {string} confidentialValueCommitment? - value commitment. Use only when utxos is not set. (need either amount or confidentialValueCommitment)
  * @property {boolean} isGrindR? - grind-R flag
+ * @property {string} auxRand? - taproot signed random 32byte nonce.
+ * @property {string} annex? - taproot annex bytes.
  */
 export interface SignWithPrivkeyTxInRequest {
     txid: string;
@@ -2719,6 +2839,96 @@ export interface SignWithPrivkeyTxInRequest {
     amount?: bigint | number;
     confidentialValueCommitment?: string;
     isGrindR?: boolean;
+    auxRand?: string;
+    annex?: string;
+}
+
+/**
+ * TapBranch data.
+ * @property {string} tapscript? - tapscript hex.
+ * @property {string} branchHash? - tapbranch hash only. (to hide the tapscript)
+ * @property {string} treeString? - tree serialize string. (cfd format)
+ */
+export interface TapBranchData {
+    tapscript?: string;
+    branchHash?: string;
+    treeString?: string;
+}
+
+/**
+ * Request for get tapscript info.
+ * @property {string} network? - network type (bitcoin:'mainnet, testnet, regtest'. elements:'liquidv1, regtest')
+ * @property {boolean} isElements? - elements transaction flag.
+ * @property {string} treeString - tree serialize string. (cfd format)
+ * @property {string} tapscript? - tapscript hex.
+ * @property {string} internalPubkey? - internal schnorr pubkey.
+ * @property {string} internalPrivkey? - internal privkey. Specify only when it is necessary to calculate.
+ * @property {string[]} nodes? - target tapbranches hash list. If exist the same tapscript in this tree, you can search for the target tapscript by specifying a hash list of tapbranches.
+ */
+export interface TapScriptFromStringRequest {
+    network?: string;
+    isElements?: boolean;
+    treeString: string;
+    tapscript?: string;
+    internalPubkey?: string;
+    internalPrivkey?: string;
+    nodes?: string[];
+}
+
+/**
+ * TapScript information
+ * @property {string} tapLeafHash? - tapleaf hash
+ * @property {string} topBranchHash - branch hash on the top.
+ * @property {string} tweakedPubkey? - tweaked schnorr pubkey with internal pubkey.
+ * @property {string} tweakedPrivkey? - tweaked privkey with internal privkey.
+ * @property {string} address? - address
+ * @property {string} lockingScript? - locking script
+ * @property {string} controlBlock? - control block
+ * @property {string} tapscript? - tapscript
+ * @property {string[]} nodes? - tapbranch list in this tree.
+ * @property {string} treeString - tree serialize string. (cfd format)
+ */
+export interface TapScriptInfo {
+    tapLeafHash?: string;
+    topBranchHash: string;
+    tweakedPubkey?: string;
+    tweakedPrivkey?: string;
+    address?: string;
+    lockingScript?: string;
+    controlBlock?: string;
+    tapscript?: string;
+    nodes?: string[];
+    treeString: string;
+}
+
+/**
+ * Request for get tapscript info.
+ * @property {string} network? - network type (bitcoin:'mainnet, testnet, regtest'. elements:'liquidv1, regtest')
+ * @property {boolean} isElements? - elements transaction flag.
+ * @property {string} tapscript - tapscript hex.
+ * @property {string} controlBlock - control block.
+ * @property {string} internalPrivkey? - internal privkey. Specify only when it is necessary to calculate.
+ */
+export interface TapScriptInfoByControlRequest {
+    network?: string;
+    isElements?: boolean;
+    tapscript: string;
+    controlBlock: string;
+    internalPrivkey?: string;
+}
+
+/**
+ * tapscript sign data.
+ * @property {string} hex - sign hex.
+ * @property {string} type? - parameter type. (binary, sign)
+ * @property {string} sighashType? - signature hash type. Valid only when type is sign. (default, all, none or single)
+ * @property {boolean} sighashAnyoneCanPay? - sighashType anyone can pay flag. Valid only when type is sign.
+ */
+export interface TapScriptSignData {
+    hex: string;
+    type?: string;
+    sighashType?: string;
+    sighashAnyoneCanPay?: boolean;
 }
 
 /**
@@ -2937,6 +3147,35 @@ export interface UtxoListData {
 }
 
 /**
+ * UTXO data.
+ * @property {string} txid - utxo txid
+ * @property {number} vout - utxo vout
+ * @property {string} address? - txout address. Set either the address or the locking script or the descriptor.
+ * @property {string} lockingScript? - txout locking script. Set either the address or the locking script or the descriptor.
+ * @property {bigint | number} amount? - satoshi amount (need either amount or confidentialValueCommitment)
+ * @property {string} confidentialValueCommitment? - value commitment (need either amount or confidentialValueCommitment)
+ * @property {string} asset? - asset hex.
+ * @property {string} confidentialAssetCommitment? - asset commitment
+ * @property {string} blindFactor? - amount blinder.
+ * @property {string} assetBlindFactor? - asset blinder.
+ * @property {string} scriptSigTemplate? - ScriptSig template is for scriptHash calculation fee.
+ */
+export interface UtxoObject {
+    txid: string;
+    vout: number;
+    address?: string;
+    lockingScript?: string;
+    descriptor?: string;
+    amount?: bigint | number;
+    confidentialValueCommitment?: string;
+    asset?: string;
+    confidentialAssetCommitment?: string;
+    blindFactor?: string;
+    assetBlindFactor?: string;
+    scriptSigTemplate?: string;
+}
+
+/**
  * Request for verify signature
  * @property {string} adaptorSignature - adaptor signature hex.
  * @property {string} proof - adaptor proof.
@@ -2969,11 +3208,13 @@ export interface VerifyPsbtSignRequest {
  * @property {string} tx - transaction hex
  * @property {boolean} isElements? - elements transaction flag.
  * @property {VerifySignatureTxInRequest} txin - txin data
+ * @property {UtxoObject[]} utxos? - UTXO data.
  */
 export interface VerifySignatureRequest {
     tx: string;
     isElements?: boolean;
     txin: VerifySignatureTxInRequest;
+    utxos?: UtxoObject[];
 }
 
 /** @property {boolean} success - verify result (true only. If it fails, an error is thrown.) */
@@ -2986,12 +3227,14 @@ export interface VerifySignatureResponse {
  * @property {number} vout - utxo vout.
  * @property {string} signature - signature
  * @property {string} pubkey - The pubkey associated with the signature.
- * @property {string} redeemScript? - The pubkey associated with the signature. (hashType is p2sh or p2wsh)
- * @property {string} hashType - hash type. (p2pkh, p2sh, p2wpkh, p2wsh)
+ * @property {string} redeemScript? - The pubkey associated with the signature. (hashType is p2sh or p2wsh, taproot)
+ * @property {string} hashType - hash type. (p2pkh, p2sh, p2wpkh, p2wsh, taproot)
  * @property {string} sighashType? - signature hash type. (all, none, single)
  * @property {boolean} sighashAnyoneCanPay? - sighashType anyone can pay flag.
- * @property {bigint | number} amount? - satoshi amount (Only when using witness. Need either amount or confidentialValueCommitment)
- * @property {string} confidentialValueCommitment? - value commitment (Only when using witness. Need either amount or confidentialValueCommitment)
+ * @property {bigint | number} amount? - satoshi amount. Use only when utxos is not set. (Only when using witness. Need either amount or confidentialValueCommitment)
+ * @property {string} confidentialValueCommitment? - value commitment. Use only when utxos is not set. (Only when using witness. Need either amount or confidentialValueCommitment)
+ * @property {string} annex? - taproot annex bytes.
+ * @property {bigint | number} codeSeparatorPosition? - (for tapscript) OP_CODESEPARATOR position.
  */
 export interface VerifySignatureTxInRequest {
     txid: string;
@@ -3004,6 +3247,8 @@ export interface VerifySignatureTxInRequest {
     sighashAnyoneCanPay?: boolean;
     amount?: bigint | number;
     confidentialValueCommitment?: string;
+    annex?: string;
+    codeSeparatorPosition?: bigint | number;
 }
 
 /**
@@ -3033,7 +3278,8 @@ export interface VerifySignResponse {
  * @property {number} vout - utxo vout
  * @property {string} address - address
  * @property {bigint | number} amount - satoshi amount
- * @property {string} descriptor? - output descriptor. (descriptor is required, you needs to consider fee amount)
+ * @property {string} descriptor? - output descriptor.
+ * @property {string} lockingScript? - txout locking script. Set either the address or the locking script or the descriptor.
  * @property {string} confidentialValueCommitment? - elements value commitment.
  */
 export interface VerifySignTxInUtxoData {
@@ -3042,6 +3288,7 @@ export interface VerifySignTxInUtxoData {
     address: string;
     amount: bigint | number;
     descriptor?: string;
+    lockingScript?: string;
     confidentialValueCommitment?: string;
 }
 
@@ -3116,6 +3363,18 @@ export class Cfdjs {
      * @return {Promise<RawTransactionResponse>} - response data.
      */
     AddSign(jsonObject: AddSignRequest): Promise<RawTransactionResponse>;
+    /**
+     * Add a signature and pubkey to the transaction.
+     * @param {AddTaprootSchnorrSignRequest} jsonObject - request data.
+     * @return {Promise<RawTransactionResponse>} - response data.
+     */
+    AddTaprootSchnorrSign(jsonObject: AddTaprootSchnorrSignRequest): Promise<RawTransactionResponse>;
+    /**
+     * Add a signature and redeem script to the transaction.
+     * @param {AddTapscriptSignRequest} jsonObject - request data.
+     * @return {Promise<RawTransactionResponse>} - response data.
+     */
+    AddTapscriptSign(jsonObject: AddTapscriptSignRequest): Promise<RawTransactionResponse>;
     /**
      * Get output descriptor added checksum.
      * @param {AppendDescriptorChecksumRequest} jsonObject - request data.
@@ -3506,10 +3765,34 @@ export class Cfdjs {
      */
     GetSchnorrPubkeyFromPubkey(jsonObject: PubkeyData): Promise<SchnorrPubkeyData>;
     /**
+     * Get signature hash.
+     * @param {GetSighashRequest} jsonObject - request data.
+     * @return {Promise<CreateSignatureHashResponse>} - response data.
+     */
+    GetSighash(jsonObject: GetSighashRequest): Promise<CreateSignatureHashResponse>;
+    /**
      * Get supported function.
      * @return {Promise<GetSupportedFunctionResponse>} - response data.
      */
     GetSupportedFunction(): Promise<GetSupportedFunctionResponse>;
+    /**
+     * Get TapScript tree from string.
+     * @param {TapScriptFromStringRequest} jsonObject - request data.
+     * @return {Promise<TapScriptInfo>} - response data.
+     */
+    GetTapScriptTreeFromString(jsonObject: TapScriptFromStringRequest): Promise<TapScriptInfo>;
+    /**
+     * Get TapScript tree info.
+     * @param {GetTapScriptTreeInfoRequest} jsonObject - request data.
+     * @return {Promise<TapScriptInfo>} - response data.
+     */
+    GetTapScriptTreeInfo(jsonObject: GetTapScriptTreeInfoRequest): Promise<TapScriptInfo>;
+    /**
+     * Get TapScript tree info by control block.
+     * @param {TapScriptInfoByControlRequest} jsonObject - request data.
+     * @return {Promise<TapScriptInfo>} - response data.
+     */
+    GetTapScriptTreeInfoByControlBlock(jsonObject: TapScriptInfoByControlRequest): Promise<TapScriptInfo>;
     /**
      * Get unblinded address.
      * @param {GetUnblindedAddressRequest} jsonObject - request data.

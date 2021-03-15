@@ -1,4 +1,4 @@
-FROM ubuntu:20.04 as cfdWasmBase
+FROM ubuntu:20.04 as cfd_wasm_base
 
 ARG EMSDK_VERSION=2.0.12
 ARG NODE_VERSION=12.18.1
@@ -31,7 +31,7 @@ RUN git clone https://github.com/emscripten-core/emsdk.git && \
     ./emsdk install $EMSDK_VERSION && \
     ./emsdk activate $EMSDK_VERSION
 
-FROM cfdWasmBase as cfdWasmBuilder
+FROM cfd_wasm_base as cfd_wasm_builder
 
 ENV PATH /usr/local/bin:/emscripten/emsdk:/emscripten/emsdk/upstream/emscripten:/emscripten/emsdk/node/12.18.1_64bit/bin:$PATH
 ENV EMSDK /emscripten/emsdk
