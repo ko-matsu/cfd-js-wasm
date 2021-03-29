@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>Dump Privkey</title>
+    <title>Verify Schnorr Signature</title>
     <style>
       #main {
         display: flex;
@@ -12,13 +12,16 @@
         height: 120vh;
         font-family: sans-serif;
       }
-      .decodeInput {
+      .decoderawtxInput {
+        width: 99%;
+      }
+      .input {
         width: 99%;
       }
       .decodeOutput {
         width: 99%;
       }
-      .decodetx-output {
+      .decode-output {
         vertical-align: top;
         margin-top: 13px;
       }
@@ -43,23 +46,32 @@
   </head>
   <body>
     <div class="decode">
-      <h3 class="decode-title">Dump Privkey</h3>
+      <h3 class="decode-title">Verify Schnorr Signature</h3>
       <div class="decode-input">
         <div>
-          <div class="decode-label">Input privkey:</div>
-          <textarea rows="3" id="inputData" class="decodeInput"></textarea><br>
-          <input type="button" name="decode" id="execDecode" value="Parse" />
+          <!-- signature -->
+          Input signature hex:<br>
+          <textarea rows="2" name="signature" id="signature" class="input"></textarea><br>
+          <!-- key -->
+          Schnorr(x-only) PublicKey:<br>
+          <textarea rows="2" name="key" id="key" class="input"></textarea><br>
+          <!-- message -->
+          message:<br>
+          <textarea rows="2" name="message" id="message" class="input"></textarea><br>
+
+          <input type="button" name="decode" id="execDecode" value="Verify" />
         </div>
+        <hr>
         <div class="decode-output">
-          <div class="decode-label">Key Info:</div>
-          <textarea rows="13" id="decoded" class="decodeOutput" readonly></textarea>
+          <div class="decode-label">Result:</div>
+          <textarea rows="4" id="decoded" class="decodeOutput" readonly></textarea>
         </div>
       </div>
     </div>
 
     <script src="/cfd-js-wasm/dist/cfdjs_wasm.js"></script>
     <script src="/cfd-js-wasm/cfdjs_wasm_jsonapi.js"></script>
-    <script src="dumpprivkey.js"></script>
+    <script src="verifyschnorrsignature.js"></script>
     <p><a href="index.html">back</a></p>
-  </body>
+ </body>
 </html>
