@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>Dump Privkey</title>
+    <title>AnalyzeScriptTree</title>
     <style>
       #main {
         display: flex;
@@ -12,10 +12,10 @@
         height: 120vh;
         font-family: sans-serif;
       }
-      .decodeInput {
+      .decoderawtxInput {
         width: 99%;
       }
-      .decodeOutput {
+      .decoderawtxOutput {
         width: 99%;
       }
       .decodetx-output {
@@ -42,24 +42,24 @@
     </style>
   </head>
   <body>
-    <div class="decode">
-      <h3 class="decode-title">Dump Privkey</h3>
-      <div class="decode-input">
+    <div class="decodetx">
+      <h3 class="decodetx-title">Analyze ScriptTree</h3>
+      <div class="decodetx-input">
         <div>
-          <div class="decode-label">Input privkey:</div>
-          <textarea rows="3" id="inputData" class="decodeInput"></textarea><br>
-          <input type="button" name="decode" id="execDecode" value="Parse" />
+          <div class="decodetx-label">Input ScriptTree:</div>
+          <textarea rows="5" id="inputTx" class="decoderawtxInput"></textarea><br>
+          <input type="button" name="decode" id="execDecode" value="Decode" />
         </div>
-        <div class="decode-output">
-          <div class="decode-label">Key Info:</div>
-          <textarea rows="13" id="decoded" class="decodeOutput" readonly></textarea>
+        <div class="decodetx-output">
+          <div class="decodetx-label">ScriptTree Data:</div>
+          <textarea rows="35" id="outputData" class="decoderawtxOutput" readonly></textarea>
         </div>
       </div>
     </div>
 
     <script src="/cfd-js-wasm/dist/cfdjs_wasm.js"></script>
     <script src="/cfd-js-wasm/cfdjs_wasm_jsonapi.js"></script>
-    <script src="dumpprivkey.js"></script>
+    <script src="analyzescripttree.js"></script>
     <p><a href="index.html">back</a></p>
   </body>
 </html>
