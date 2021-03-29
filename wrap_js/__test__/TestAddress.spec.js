@@ -34,6 +34,14 @@ const createTestFunc = (helper) => {
       resp = cfd.GetTapScriptTreeFromString(request);
       resp = await helper.getResponse(resp);
       break;
+    case 'Address.GetTapBranchInfo':
+      resp = cfd.GetTapBranchInfo(request);
+      resp = await helper.getResponse(resp);
+      break;
+    case 'Address.AnalyzeTapScriptTree':
+      resp = cfd.AnalyzeTapScriptTree(request);
+      resp = await helper.getResponse(resp);
+      break;
     default:
       throw new Error('unknown name: ' + testName);
     }
