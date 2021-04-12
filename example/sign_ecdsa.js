@@ -1,6 +1,9 @@
 const updateField = async function(event) {
   const decoded = document.getElementById("decoded");
-  let signature = document.getElementById("signature").value;
+  const sighash = document.getElementById("sighash").value;
+  let privkey = document.getElementById("privkey").value;
+
+  const isEncodeDer = document.getElementById("der_encode").checked;
   const isAnyoneCanPay = document.getElementById("anyonecanpay").checked;
   const isRangeproof = document.getElementById("rangeproof").checked;
   const sighashtypeObj = document.getElementById("sighashtype");
@@ -13,11 +16,31 @@ const updateField = async function(event) {
     sighashType = sighashType + '|rangeproof';
   }
 
+  let wif = false;
+  let network = 'mainnet';
+  let isCompressed = true;
+  try {
+    const req = {wif: privkey};
+    const wifData = await callJsonApi(Module, 'GetPrivkeyFromWif', req);
+    wif = true;
+    network = wifData.network;
+    isCompressed = wifData.isCompressed;
+  } catch (e) {
+    // do nothing
+  }
+
   try {
     const req = {
-      signature, sighashType,
+      sighash,
+      privkeyData: {
+        privkey, wif, network, isCompressed
+      },
     };
-    const resp = await callJsonApi(Module, 'EncodeSignatureByDer', req);
+    let resp = await callJsonApi(Module, 'CalculateEcSignature', req);
+    if (isEncodeDer) {
+      const derReq = { signature: resp.signature, sighashType };
+      resp = await callJsonApi(Module, 'EncodeSignatureByDer', derReq);
+    }
     decoded.value = JSON.stringify(resp, null, '  ');
   } catch (e) {
     decoded.value = 'Invalid format';
