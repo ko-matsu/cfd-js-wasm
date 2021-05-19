@@ -86,7 +86,7 @@ If you use old npm or yarn, describe as follows:
 
 - Clang (10.0.0 or higher)
 - C/C++ Compiler
-  - can compile c++11
+  - can compile c++11
 - CMake (3.14.3 or higher)
 - Python (3.8 or higher)
 - node.js (12.8 or higher)
