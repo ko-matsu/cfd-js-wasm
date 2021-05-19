@@ -1095,7 +1095,7 @@ export interface DecodeUnlockingScript {
 }
 
 /**
- * @property {string} keyType - contain key type (pubkey, extPubkey, extPrivkey)
+ * @property {string} keyType - contain key type (pubkey, extPubkey, extPrivkey, schnorrPubkey)
  * @property {string} key - key value (hex or base58)
  */
 export interface DescriptorKeyJson {
@@ -1110,8 +1110,8 @@ export interface DescriptorKeyJson {
  * @property {string} address - address
  * @property {string} hashType - hash type (p2wpkh, p2wsh, p2pkh, p2sh, p2sh-p2wpkh, p2sh-p2wsh)
  * @property {string} redeemScript? - redeem script for script hash. (This field is only available when hashType is p2wsh, p2sh, or p2sh-p2wsh.)
- * @property {string} keyType? - contain key type (pubkey, extPubkey, extPrivkey)
- * @property {string} key? - key value (hex or base58) (This field is only available when hashType is p2wpkh, p2pkh, or p2pk.)
+ * @property {string} keyType? - contain key type (pubkey, extPubkey, extPrivkey, schnorrPubkey)
+ * @property {string} key? - key value (hex or base58) (This field is only available when hashType is taproot, p2wpkh, p2pkh, or p2pk. taproot is xonly-pubkey.)
  * @property {DescriptorKeyJson[]} keys? - keys included in multisig
  * @property {number} reqNum? - number of required signatures to solve multisig script.
  */
@@ -1878,6 +1878,15 @@ export interface GetExtkeyInfoResponse {
 }
 
 /**
+ * @property {number} index - index (on the first)
+ * @property {number[]} indexes? - index list
+ */
+export interface GetIndexData {
+    index: number;
+    indexes?: number[];
+}
+
+/**
  * Request for get issuance blinding key.
  * @property {string} masterBlindingKey - master blinding key
  * @property {string} txid - utxo txid
@@ -2031,6 +2040,34 @@ export interface GetTapScriptTreeInfoRequest {
     internalPubkey?: string;
     internalPrivkey?: string;
     tree: TapBranchData[];
+}
+
+/**
+ * Request for get txin index.
+ * @property {string} tx - transaction hex
+ * @property {boolean} isElements? - elements transaction flag.
+ * @property {string} txid - utxo txid
+ * @property {number} vout - utxo vout
+ */
+export interface GetTxInIndexRequest {
+    tx: string;
+    isElements?: boolean;
+    txid: string;
+    vout: number;
+}
+
+/**
+ * Request for get txout index.
+ * @property {string} tx - transaction hex
+ * @property {boolean} isElements? - elements transaction flag.
+ * @property {string} address? - target address
+ * @property {string} directLockingScript? - target locking script
+ */
+export interface GetTxOutIndexRequest {
+    tx: string;
+    isElements?: boolean;
+    address?: string;
+    directLockingScript?: string;
 }
 
 /**
@@ -2217,9 +2254,11 @@ export interface ParseDescriptorRequest {
  * @property {string} type - descriptor type.
  * @property {string} address? - address (This field is only available for types other than `raw`.)
  * @property {string} lockingScript - locking script
- * @property {string} hashType? - hash type (p2wpkh, p2wsh, p2pkh, p2sh, p2sh-p2wpkh, p2sh-p2wsh)
+ * @property {string} hashType? - hash type (p2wpkh, p2wsh, p2pkh, p2sh, p2sh-p2wpkh, p2sh-p2wsh, taproot)
  * @property {string} redeemScript? - redeem script on script hash. (This field is only available when hashType is p2wsh, p2sh, or p2sh-p2wsh.)
  * @property {boolean} includeMultisig - multisig flag (whether multisig descriptor is included in scripts stack)
+ * @property {string} treeString? - taproot script tree serialize string. (cfd format)
+ * @property {DescriptorKeyJson[]} keys? - key list
  * @property {DescriptorScriptJson[]} scripts? - descriptor item.
  */
 export interface ParseDescriptorResponse {
@@ -2229,6 +2268,8 @@ export interface ParseDescriptorResponse {
     hashType?: string;
     redeemScript?: string;
     includeMultisig: boolean;
+    treeString?: string;
+    keys?: DescriptorKeyJson[];
     scripts?: DescriptorScriptJson[];
 }
 
@@ -2888,6 +2929,34 @@ export interface SignWithPrivkeyTxInRequest {
 }
 
 /**
+ * add txout data for split
+ * @property {bigint | number} amount - satoshi amount
+ * @property {string} address? - target address (or confidential address)
+ * @property {string} directLockingScript? - target locking script
+ * @property {string} directNonce? - add nonce data (elements only)
+ */
+export interface SplitTxOutData {
+    amount: bigint | number;
+    address?: string;
+    directLockingScript?: string;
+    directNonce?: string;
+}
+
+/**
+ * Request for split txout.
+ * @property {string} tx - transaction hex
+ * @property {boolean} isElements? - elements transaction flag.
+ * @property {number} index - split target txout index.
+ * @property {SplitTxOutData[]} txouts - add txout data for split
+ */
+export interface SplitTxOutRequest {
+    tx: string;
+    isElements?: boolean;
+    index: number;
+    txouts: SplitTxOutData[];
+}
+
+/**
  * TapBranch data.
  * @property {string} tapscript? - tapscript hex.
  * @property {string} branchHash? - tapbranch hash only. (to hide the tapscript)
@@ -3369,6 +3438,7 @@ export interface VerifySignTxInUtxoData {
 }
 
 /**
+ * Updating WitnessStack data. Only index and hex are used in UpdatePeginWitnessStack.
  * @property {number} index - stack index
  * @property {string} hex - update data
  * @property {string} type? - parameter type. (binary, sign, pubkey, redeem_script)
@@ -3884,6 +3954,18 @@ export class Cfdjs {
      */
     GetTapScriptTreeInfoByControlBlock(jsonObject: TapScriptInfoByControlRequest): Promise<TapScriptInfo>;
     /**
+     * Get TxIn Index.
+     * @param {GetTxInIndexRequest} jsonObject - request data.
+     * @return {Promise<GetIndexData>} - response data.
+     */
+    GetTxInIndex(jsonObject: GetTxInIndexRequest): Promise<GetIndexData>;
+    /**
+     * Get TxOut Index.
+     * @param {GetTxOutIndexRequest} jsonObject - request data.
+     * @return {Promise<GetIndexData>} - response data.
+     */
+    GetTxOutIndex(jsonObject: GetTxOutIndexRequest): Promise<GetIndexData>;
+    /**
      * Get unblinded address.
      * @param {GetUnblindedAddressRequest} jsonObject - request data.
      * @return {Promise<GetUnblindedAddressResponse>} - response data.
@@ -4010,6 +4092,12 @@ export class Cfdjs {
      */
     SignWithPrivkey(jsonObject: SignWithPrivkeyRequest): Promise<RawTransactionResponse>;
     /**
+     * Split txout.
+     * @param {SplitTxOutRequest} jsonObject - request data.
+     * @return {Promise<RawTransactionResponse>} - response data.
+     */
+    SplitTxOut(jsonObject: SplitTxOutRequest): Promise<RawTransactionResponse>;
+    /**
      * TweakAdd privkey.
      * @param {TweakPrivkeyData} jsonObject - request data.
      * @return {Promise<OutputPrivkeyData>} - response data.
@@ -4051,6 +4139,12 @@ export class Cfdjs {
      * @return {Promise<UnblindRawTransactionResponse>} - response data.
      */
     UnblindRawTransaction(jsonObject: UnblindRawTransactionRequest): Promise<UnblindRawTransactionResponse>;
+    /**
+     * Update Pegin witness stack. isElements not reference (force true).
+     * @param {UpdateWitnessStackRequest} jsonObject - request data.
+     * @return {Promise<RawTransactionResponse>} - response data.
+     */
+    UpdatePeginWitnessStack(jsonObject: UpdateWitnessStackRequest): Promise<RawTransactionResponse>;
     /**
      * Update txout amount.
      * @param {UpdateTxOutAmountRequest} jsonObject - request data.

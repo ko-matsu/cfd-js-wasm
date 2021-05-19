@@ -1404,7 +1404,10 @@
                 },
                 "expect": {
                     "signature": "47ac8e878352d3ebbde1c94ce3a10d057c24175747116f8288e5d794d12d482f217f36a485cae903c713331d877c1f64677e3622ad4010726870540656fe9dcb"
-                }
+                },
+                "exclude": [
+                    "python"
+                ]
             },
             {
                 "case": "sighash none|rangeproof",
