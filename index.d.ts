@@ -339,6 +339,62 @@ export interface BlindTxOutRequest {
 }
 
 /**
+ * block data.
+ * @property {boolean} isElements? - elements transaction flag.
+ * @property {string} block - block hex
+ */
+export interface BlockData {
+    isElements?: boolean;
+    block: string;
+}
+
+/**
+ * The output block information.
+ * @property {string} blockHash - block hash.
+ * @property {string[]} tx - txid list.
+ * @property {number} version - version.
+ * @property {string} versionHex - version hex.
+ * @property {string} previousblockhash - previous block hash.
+ * @property {string} merkleroot - merkleroot.
+ * @property {number} time - block time.
+ * @property {number} bits - bits.
+ * @property {number} nonce - nonce.
+ */
+export interface BlockInformation {
+    blockHash: string;
+    tx: string[];
+    version: number;
+    versionHex: string;
+    previousblockhash: string;
+    merkleroot: string;
+    time: number;
+    bits: number;
+    nonce: number;
+}
+
+/**
+ * The output block transaction data.
+ * @property {string} tx - tx hex.
+ * @property {string} txoutproof - txout proof.
+ */
+export interface BlockTxData {
+    tx: string;
+    txoutproof: string;
+}
+
+/**
+ * Request by block and txid.
+ * @property {boolean} isElements? - elements transaction flag.
+ * @property {string} block - block hex
+ * @property {string} txid - txid
+ */
+export interface BlockTxRequest {
+    isElements?: boolean;
+    block: string;
+    txid: string;
+}
+
+/**
  * request ec signature data.
  * @property {string} sighash - signature hash.
  * @property {PrivkeyData} privkeyData? - private key data.
@@ -3214,6 +3270,22 @@ export interface UnblindTxOut {
 }
 
 /**
+ * Request for update sequence number
+ * @property {string} tx - transaction hex
+ * @property {boolean} isElements? - elements transaction flag.
+ * @property {string} txid - utxo txid.
+ * @property {number} vout - utxo vout.
+ * @property {number} sequence - sequence number
+ */
+export interface UpdateTxInSequenceRequest {
+    tx: string;
+    isElements?: boolean;
+    txid: string;
+    vout: number;
+    sequence: number;
+}
+
+/**
  * target txout
  * @property {bigint | number} amount - satoshi amount
  * @property {number} index? - txout index
@@ -3829,6 +3901,12 @@ export class Cfdjs {
      */
     GetAddressInfo(jsonObject: GetAddressInfoRequest): Promise<GetAddressInfoResponse>;
     /**
+     * Get block header and txid list.
+     * @param {BlockData} jsonObject - request data.
+     * @return {Promise<BlockInformation>} - response data.
+     */
+    GetBlockInfo(jsonObject: BlockData): Promise<BlockInformation>;
+    /**
      * Get commitment.
      * @param {GetCommitmentRequest} jsonObject - request data.
      * @return {Promise<GetCommitmentResponse>} - response data.
@@ -3953,6 +4031,12 @@ export class Cfdjs {
      * @return {Promise<TapScriptInfo>} - response data.
      */
     GetTapScriptTreeInfoByControlBlock(jsonObject: TapScriptInfoByControlRequest): Promise<TapScriptInfo>;
+    /**
+     * Get block header and txid list.
+     * @param {BlockTxRequest} jsonObject - request data.
+     * @return {Promise<BlockTxData>} - response data.
+     */
+    GetTxDataFromBlock(jsonObject: BlockTxRequest): Promise<BlockTxData>;
     /**
      * Get TxIn Index.
      * @param {GetTxInIndexRequest} jsonObject - request data.
@@ -4145,6 +4229,12 @@ export class Cfdjs {
      * @return {Promise<RawTransactionResponse>} - response data.
      */
     UpdatePeginWitnessStack(jsonObject: UpdateWitnessStackRequest): Promise<RawTransactionResponse>;
+    /**
+     * Update sequence number
+     * @param {UpdateTxInSequenceRequest} jsonObject - request data.
+     * @return {Promise<RawTransactionResponse>} - response data.
+     */
+    UpdateTxInSequence(jsonObject: UpdateTxInSequenceRequest): Promise<RawTransactionResponse>;
     /**
      * Update txout amount.
      * @param {UpdateTxOutAmountRequest} jsonObject - request data.
