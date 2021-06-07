@@ -30,6 +30,9 @@ jobs:
       timeout-minutes: 1
       with:
         node-version: ${{ matrix.node }}
+    - name: update to npm v7
+      if: matrix.node != '12' && matrix.node != '14'
+      run: npm i -g npm@7
     - name: dump node version
       id: node_ver
       run: |
