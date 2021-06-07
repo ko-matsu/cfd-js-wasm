@@ -67,7 +67,7 @@ jobs:
         npm set progress=false
         npm ci
     - name: test
-      run: npm run test
+      run: npm run test_detail
     - name: example
       run: |
         npm run example
