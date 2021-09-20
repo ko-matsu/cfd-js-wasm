@@ -21,7 +21,7 @@ services:
     volumes:
       - ./:/workspace
     working_dir: /workspace
-    command: /bin/bash -c "npm run test_example"
+    command: /bin/bash -c "npm install && npm run test_example"
 
   wasm-update-package-lock:
     image: ghcr.io/cryptogarageinc/elements-testing:v0.1.0
