@@ -53,22 +53,23 @@
     "eslint_check": "eslint --ext .js,.ts *.js wrap_js/",
     "check_local": "run-p doxygen_dev format_cpp_all format_js_all",
     "check": "run-p doxygen_check lint_all example elements_example ts_example test",
+    "test_example": "run-p example elements_example ts_example test",
     "convert_json": "ts-node ./tools/generate_json_map_class.ts",
     "convert_json_debug": "ts-node ./tools/generate_json_map_class.ts mode=debug"
   },
   "dependencies": {
-    "@types/node": "^15.6.1"
+    "@types/node": "^16.9.2"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.25.0",
     "@typescript-eslint/parser": "^4.25.0",
-    "del-cli": "^3.0.1",
+    "del-cli": "^4.0.1",
     "eslint": "^7.27.0",
     "eslint-config-google": "^0.14.0",
     "jest": "^27.0.3",
     "npm-run-all": "^4.1.5",
     "run-script-os": "^1.1.6",
-    "ts-morph": "^11.0.0",
+    "ts-morph": "^12.0.0",
     "ts-node": "^10.0.0",
     "typescript": "^4.3.2"
   }
