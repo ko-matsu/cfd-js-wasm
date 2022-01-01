@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>Dump Privkey</title>
+    <title>Tweak Privkey</title>
     <style>
       #main {
         display: flex;
@@ -43,23 +43,25 @@
   </head>
   <body>
     <div class="decode">
-      <h3 class="decode-title">Dump Privkey</h3>
+      <h3 class="decode-title">Tweak Privkey</h3>
       <div class="decode-input">
         <div>
           <div class="decode-label">Input privkey:</div>
-          <textarea rows="3" id="inputData" class="decodeInput"></textarea><br>
+          <textarea rows="2" id="inputData" class="decodeInput"></textarea><br>
+          <div class="decode-label">Tweak:</div>
+          <textarea rows="2" id="tweak" class="decodeInput"></textarea><br>
           <input type="button" name="decode" id="execDecode" value="Parse" />
         </div>
         <div class="decode-output">
           <div class="decode-label">Key Info:</div>
-          <textarea rows="15" id="decoded" class="decodeOutput" readonly></textarea>
+          <textarea rows="16" id="decoded" class="decodeOutput" readonly></textarea>
         </div>
       </div>
     </div>
 
     <script src="/cfd-js-wasm/dist/cfdjs_wasm.js"></script>
     <script src="/cfd-js-wasm/cfdjs_wasm_jsonapi.js"></script>
-    <script src="dumpprivkey.js"></script>
+    <script src="tweak_privkey.js"></script>
     <p><a href="index.html">back</a></p>
   </body>
 </html>
