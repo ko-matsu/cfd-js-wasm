@@ -1,5 +1,6 @@
 const updateField = async function(event) {
   const inputData = document.getElementById("inputData");
+  const tweak = document.getElementById("tweak").value;
   const decoded = document.getElementById("decoded");
 
   let privkeyInfo;
@@ -48,18 +49,18 @@ const updateField = async function(event) {
   }
 
   try {
+    privkeyInfo['tweak'] = tweak;
     const req = {
       privkey: privkeyInfo.privkey.hex,
-      isCompressed,
+      tweak,
     };
-    const resp = await callJsonApi(Module, 'GetPubkeyFromPrivkey', req);
-    privkeyInfo['pubkey'] = resp.pubkey;
+    const resp1 = await callJsonApi(Module, 'TweakAddPrivkey', req);
+    privkeyInfo['tweakAddPrivkey'] = resp1.privkey;
+    const resp2 = await callJsonApi(Module, 'TweakMulPrivkey', req);
+    privkeyInfo['tweakMulPrivkey'] = resp2.privkey;
 
-    const schnorrResp = await callJsonApi(Module, 'GetSchnorrPubkeyFromPrivkey', req);
-    privkeyInfo['schnorrPubkey'] = schnorrResp;
-
-    const negateResp = await callJsonApi(Module, 'NegatePrivkey', req);
-    privkeyInfo['negatePrivkey'] = negateResp.privkey;
+    const schnorrResp = await callJsonApi(Module, 'TweakAddSchnorrPubkeyFromPrivkey', req);
+    privkeyInfo['tweakAddSchnorrPubkey'] = schnorrResp;
 
     decoded.value = JSON.stringify(privkeyInfo, null, '  ');
   } catch (e) {
