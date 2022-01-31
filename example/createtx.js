@@ -202,7 +202,7 @@ const txOutputTemplate = '<hr><li>' +
   '<div id="elementsOutput__NUM__" style="display:none">' +
     'asset:<br>' +
     '<textarea rows="1" name="out_asset__NUM__" id="out_asset__NUM__" class="input"></textarea><br>' +
-    'nonce:<br>' +
+    '(nonce):<br>' +
     '<textarea rows="1" name="out_nonce__NUM__" id="out_nonce__NUM__" class="input"></textarea><br>' +
   '</div>' +
   '(locking script):<br>' +
