@@ -25,13 +25,55 @@ const updateField = async function(event) {
   }
 
   let isElements = true;
+  let networkWithKey = 'mainnet';
   if ((network === 'mainnet') || (network === 'testnet') || (network === 'regtest')) {
     isElements = false;
   } else if (network === 'elementsregtest') {
     network = 'regtest';
   }
+  if ((network === 'testnet') || (network === 'regtest')) networkWithKey = 'testnet';
 
-  const privkey = document.getElementById('privkey').value;
+  let privkey;
+  try {
+    const mnemonicWords = document.getElementById('mnemonic').value;
+    const passphrase = document.getElementById('passphrase').value;
+    const path = document.getElementById('bip32path').value;
+    const mnemonic = mnemonicWords.replaceAll(/\r\n|\n|\r|,|"/g, ' ').
+        replaceAll(/\s+/g, ' ').trim().split(' ');
+
+    const req1 = {
+      mnemonic,
+      passphrase,
+      strictCheck: false,
+      language: 'en',
+      useIdeographicSpace: false,
+    }; // ConvertMnemonicToSeedRequest
+    const resp1 = await callJsonApi(Module, 'ConvertMnemonicToSeed', req1);
+    const req2 = {
+      seed: resp1.seed,
+      network: networkWithKey,
+      extkeyType: 'extPrivkey',
+    }; // CreateExtkeyFromSeed
+    const resp2 = await callJsonApi(Module, 'CreateExtkeyFromSeed', req2);
+    const req3 = {
+      extkey: resp2.extkey,
+      network: networkWithKey,
+      extkeyType: 'extPrivkey',
+      path,
+    }; // CreateExtkeyFromParentPathRequest
+    const resp3 = await callJsonApi(Module, 'CreateExtkeyFromParentPath', req3);
+    const req4 = {
+      extkey: resp3.extkey,
+      network: networkWithKey,
+      wif: true,
+      isCompressed: true,
+    }; // GetPrivkeyFromExtkeyRequest
+    const resp4 = await callJsonApi(Module, 'GetPrivkeyFromExtkey', req4);
+    privkey = resp4.privkey;
+  } catch (e) {
+    decoded.value = 'Invalid mnemonic';
+    return;
+  }
 
   const value = document.getElementById('amount').value;
   if (isElements && value.length == 66) {
