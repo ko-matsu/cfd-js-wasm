@@ -219,6 +219,7 @@ const addTxInput = async function() {
   value = value.replace(/__NUM__/ig, `${num}`);
   const txInputField = document.getElementById('tx-input');
   txInputField.insertAdjacentHTML('beforeend', value);
+  changeNetworkField();
 };
 
 const addTxOutput = async function() {
@@ -232,6 +233,7 @@ const addTxOutput = async function() {
   value = value.replace(/__NUM__/ig, `${num}`);
   const txInputField = document.getElementById('tx-output');
   txInputField.insertAdjacentHTML('beforeend', value);
+  changeNetworkField();
 };
 
 const decodeBtnField = document.getElementById('execCreate');
