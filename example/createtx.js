@@ -196,7 +196,7 @@ const txInputTemplate = '<hr><li>' +
     '<textarea rows="1" name="abf__NUM__" id="abf__NUM__" class="input"></textarea><br>' +
   '</div>';
 const txOutputTemplate = '<hr><li>' +
-  'address:<br>' +
+  'address: (elements fee set this field to empty.)<br>' +
   '<textarea rows="2" name="out_address__NUM__" id="out_address__NUM__" class="input"></textarea><br>' +
   'amount: <input type="number" name="out_amount__NUM__" id="out_amount__NUM__" value="0" min="0" max="2100000000000000" step="1" /><br>' +
   '<div id="elementsOutput__NUM__" style="display:none">' +
