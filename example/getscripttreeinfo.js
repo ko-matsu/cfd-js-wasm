@@ -7,8 +7,13 @@ const updateField = async function(event) {
   const internalPrivkey = document.getElementById("privkey").value;
   const networkObj = document.getElementById("network");
   const selectedNetworkIdx = networkObj.selectedIndex;
-  let networkValue = networkObj.options[selectedNetworkIdx].value;
-  let network = networkValue;
+  let network = networkObj.options[selectedNetworkIdx].value;
+  let isElements = true;
+  if ((network === 'mainnet') || (network === 'testnet') || (network === 'regtest')) {
+    isElements = false;
+  } else if (network === 'elementsregtest') {
+    network = 'regtest';
+  }
 
   const nodes = [];
   const arr = branches.replaceAll(/\n|\r|,|"/g, ' ').replaceAll(/\s+/g, ' ').split(' ');
@@ -19,6 +24,7 @@ const updateField = async function(event) {
   try {
     const req = {
       network,
+      isElements,
       treeString,
       tapscript,
       nodes,

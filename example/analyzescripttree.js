@@ -61,9 +61,21 @@ const updateField = async function(event) {
   const inputTx = document.getElementById("inputTx");
   const outputData = document.getElementById("outputData");
 
+  const networkObj = document.getElementById("network");
+  const selectedNetworkIdx = networkObj.selectedIndex;
+  let network = networkObj.options[selectedNetworkIdx].value;
+  let isElements = true;
+  if ((network === 'mainnet') || (network === 'testnet') || (network === 'regtest')) {
+    isElements = false;
+  } else if (network === 'elementsregtest') {
+    network = 'regtest';
+  }
+
   try {
     const req = {
       treeString: inputTx.value,
+      network,
+      isElements,
     };
     const resp = await callJsonApi(Module, 'AnalyzeTapScriptTree', req);
     const scriptMap = {};
@@ -85,7 +97,8 @@ const updateField = async function(event) {
             },
             leafVersion: branch.leafVersion,
           };
-          if (tapleaf.leafVersion == 0xc0) delete tapleaf.leafVersion;
+          if (!isElements && tapleaf.leafVersion == 0xc0) delete tapleaf.leafVersion;
+          if (isElements && tapleaf.leafVersion == 0xc4) delete tapleaf.leafVersion;
           scriptMap[branch.tapBranchHash] = tapleaf;
           if (branch.depth == 0) rootData = tapleaf;
         } else {
