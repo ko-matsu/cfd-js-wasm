@@ -1,16 +1,6 @@
 /* eslint-disable max-len */
 /* eslint-disable indent */
 /**
- * Request for adapt signature on ecdsa adaptor.
- * @property {string} adaptorSignature - adaptor signature hex.
- * @property {string} secret - secret data
- */
-export interface AdaptEcdsaAdaptorRequest {
-    adaptorSignature: string;
-    secret: string;
-}
-
-/**
  * Multisig input data to add to tx.
  * @property {boolean} isElements? - elements transaction flag.
  * @property {string} tx - transaction hex
@@ -92,6 +82,26 @@ export interface AddRawTransactionRequest {
     tx: string;
     txins?: TxInRequest[];
     txouts?: TxOutRequest[];
+}
+
+/**
+ * address prefix customize data.
+ * @property {string} nettype - network type (mainnet, testnet, regtest, liquidv1, elementsregtest, custom)
+ * @property {string} p2pkh - p2pkh prefix
+ * @property {string} p2sh - p2sh prefix
+ * @property {string} bech32 - bech32 prefix
+ * @property {string} blinded? - (elements only) blinded p2pkh prefix
+ * @property {string} blindedP2sh? - (elements only) blinded p2sh prefix. If not set, use blinded.
+ * @property {string} blech32? - (elements only) blind bech32 prefix
+ */
+export interface AddressPrefixCustomizeData {
+    nettype: string;
+    p2pkh: string;
+    p2sh: string;
+    bech32: string;
+    blinded?: string;
+    blindedP2sh?: string;
+    blech32?: string;
 }
 
 /**
@@ -226,9 +236,13 @@ export interface AnalyzeTapScriptTreeInfo {
 
 /**
  * Request for get TapBranch info.
+ * @property {string} network? - network type (bitcoin:'mainnet, testnet, regtest'. elements:'liquidv1, regtest')
+ * @property {boolean} isElements? - elements transaction flag.
  * @property {string} treeString - tree serialize string. (cfd format)
  */
 export interface AnalyzeTapScriptTreeRequest {
+    network?: string;
+    isElements?: boolean;
     treeString: string;
 }
 
@@ -501,7 +515,7 @@ export interface ConvertEntropyToMnemonicResponse {
  * @property {string[]} mnemonic - mnemonic words
  * @property {string} passphrase - passphrase
  * @property {boolean} strictCheck? - Check mnemonic words strictly
- * @property {string} language? - mnemonic language (support [en es fr it jp zhs zht])
+ * @property {string} language? - mnemonic language (support [en]. Other languages are not working properly.)
  * @property {boolean} useIdeographicSpace? - Currently, this flag is valid only the language is set "jp".
  */
 export interface ConvertMnemonicToSeedRequest {
@@ -638,6 +652,7 @@ export interface CreateElementsSignatureHashTxIn {
  * Request data for creating extkey from parent's key.
  * @property {string} network - network type (mainnet, testnet or regtest)
  * @property {string} extkeyType? - extkey type (extPrivkey or extPubkey)
+ * @property {string} bip32FormatType? - bip32 format type (bip32, bip49, bip84)
  * @property {string} parentKey - parent key (pubkey or privkey)
  * @property {number} parentDepth - parent depth
  * @property {string} parentChainCode - parent chain code
@@ -647,6 +662,7 @@ export interface CreateElementsSignatureHashTxIn {
 export interface CreateExtkeyFromParentKeyRequest {
     network: string;
     extkeyType?: string;
+    bip32FormatType?: string;
     parentKey: string;
     parentDepth: number;
     parentChainCode: string;
@@ -691,17 +707,20 @@ export interface CreateExtkeyFromParentRequest {
  * @property {string} seed - seed hex data
  * @property {string} network - network type (mainnet, testnet or regtest)
  * @property {string} extkeyType? - extkey type (extPrivkey or extPubkey)
+ * @property {string} bip32FormatType? - bip32 format type (bip32, bip49, bip84)
  */
 export interface CreateExtkeyFromSeedRequest {
     seed: string;
     network: string;
     extkeyType?: string;
+    bip32FormatType?: string;
 }
 
 /**
  * Request data for creating extkey.
  * @property {string} network - network type (mainnet, testnet or regtest)
  * @property {string} extkeyType? - extkey type (extPrivkey or extPubkey)
+ * @property {string} bip32FormatType? - bip32 format type (bip32, bip49, bip84)
  * @property {string} parentKey? - parent key
  * @property {string} parentFingerprint? - parent key's fingerprint.
  * @property {string} key - key hex. (pubkey or privkey)
@@ -713,6 +732,7 @@ export interface CreateExtkeyFromSeedRequest {
 export interface CreateExtkeyRequest {
     network: string;
     extkeyType?: string;
+    bip32FormatType?: string;
     parentKey?: string;
     parentFingerprint?: string;
     key: string;
@@ -1177,6 +1197,16 @@ export interface DecodeUnlockingScript {
 }
 
 /**
+ * Request for decrypt signature on ecdsa adaptor.
+ * @property {string} adaptorSignature - adaptor signature hex.
+ * @property {string} secret - secret data
+ */
+export interface DecryptEcdsaAdaptorRequest {
+    adaptorSignature: string;
+    secret: string;
+}
+
+/**
  * @property {string} keyType - contain key type (pubkey, extPubkey, extPrivkey, schnorrPubkey)
  * @property {string} key - key value (hex or base58)
  */
@@ -1207,6 +1237,14 @@ export interface DescriptorScriptJson {
     key?: string;
     keys?: DescriptorKeyJson[];
     reqNum?: number;
+}
+
+/**
+ * ecdsa adaptor signature
+ * @property {string} adaptorSignature - adaptor signature hex.
+ */
+export interface EcdsaAdaptorSignature {
+    adaptorSignature: string;
 }
 
 /**
@@ -1561,6 +1599,20 @@ export interface EncodeSignatureByDerResponse {
 }
 
 /**
+ * Request for encrypt on ecdsa adaptor
+ * @property {string} message - message data. (32-byte hash, or text message.)
+ * @property {boolean} isHashed? - is 32-byte hashed message.
+ * @property {string} privkey - private key.
+ * @property {string} encryptionKey - adaptor encryption key.
+ */
+export interface EncryptEcdsaAdaptorRequest {
+    message: string;
+    isHashed?: boolean;
+    privkey: string;
+    encryptionKey: string;
+}
+
+/**
  * Error response base interface
  * @property {InnerErrorResponse} error - Inner error information
  */
@@ -1602,18 +1654,6 @@ export interface EstimateFeeResponse {
     txFeeAmount?: bigint;
     txoutFeeAmount?: bigint;
     utxoFeeAmount?: bigint;
-}
-
-/**
- * Request for extract secret data on ecdsa adaptor.
- * @property {string} adaptorSignature - adaptor signature hex.
- * @property {string} signature - signature hex.
- * @property {string} adaptor - adaptor pubkey
- */
-export interface ExtractSecretEcdsaAdaptorRequest {
-    adaptorSignature: string;
-    signature: string;
-    adaptor: string;
 }
 
 /**
@@ -2058,12 +2098,14 @@ export interface GetSchnorrPubkeyFromPrivkeyRequest {
  * @property {boolean} isElements? - elements transaction flag.
  * @property {GetSighashTxIn} txin - txin data
  * @property {UtxoObject[]} utxos - UTXO data.
+ * @property {string} genesisBlockHash? - genesis block hash (for elements taproot)
  */
 export interface GetSighashRequest {
     tx: string;
     isElements?: boolean;
     txin: GetSighashTxIn;
     utxos: UtxoObject[];
+    genesisBlockHash?: string;
 }
 
 /**
@@ -2102,12 +2144,16 @@ export interface GetSupportedFunctionResponse {
 
 /**
  * Request for get TapBranch info.
+ * @property {string} network? - network type (bitcoin:'mainnet, testnet, regtest'. elements:'liquidv1, regtest')
+ * @property {boolean} isElements? - elements transaction flag.
  * @property {string} treeString - tree serialize string. (cfd format)
  * @property {string} tapscript? - tapscript hex.
  * @property {string[]} nodes? - target tapbranches hash list. If exist the same tapscript in this tree, you can search for the target tapscript by specifying a hash list of tapbranches.
  * @property {number} index - branch index.
  */
 export interface GetTapBranchInfoRequest {
+    network?: string;
+    isElements?: boolean;
     treeString: string;
     tapscript?: string;
     nodes?: string[];
@@ -2316,6 +2362,28 @@ export interface IssuanceDataResponse {
 }
 
 /**
+ * key prefix customize data.
+ * @property {string} IsMainnet? - mainnet flag. true is 'true' or empty.
+ * @property {string} wif - wif prefix
+ * @property {string} bip32xpub - bip32xpub version
+ * @property {string} bip32xprv - bip32xprv version
+ * @property {string} bip49ypub? - bip49ypub version
+ * @property {string} bip49yprv? - bip49yprv version
+ * @property {string} bip84zpub? - bip84zpub version
+ * @property {string} bip84zprv? - bip84zprv version
+ */
+export interface KeyPrefixCustomizeData {
+    IsMainnet?: string;
+    wif: string;
+    bip32xpub: string;
+    bip32xprv: string;
+    bip49ypub?: string;
+    bip49yprv?: string;
+    bip84zpub?: string;
+    bip84zprv?: string;
+}
+
+/**
  * OutPoint data.
  * @property {string} txid - utxo txid.
  * @property {number} vout - utxo vout.
@@ -2364,6 +2432,7 @@ export interface ParseDescriptorRequest {
  * @property {string} redeemScript? - redeem script on script hash. (This field is only available when hashType is p2wsh, p2sh, or p2sh-p2wsh.)
  * @property {boolean} includeMultisig - multisig flag (whether multisig descriptor is included in scripts stack)
  * @property {string} treeString? - taproot script tree serialize string. (cfd format)
+ * @property {string} tapTweak? - tapTweak by scriptTree & internalPubkey.
  * @property {DescriptorKeyJson[]} keys? - key list
  * @property {DescriptorScriptJson[]} scripts? - descriptor item.
  */
@@ -2375,6 +2444,7 @@ export interface ParseDescriptorResponse {
     redeemScript?: string;
     includeMultisig: boolean;
     treeString?: string;
+    tapTweak?: string;
     keys?: DescriptorKeyJson[];
     scripts?: DescriptorScriptJson[];
 }
@@ -2678,6 +2748,18 @@ export interface RawTransactionResponse {
 }
 
 /**
+ * Request for recover secret data on ecdsa adaptor.
+ * @property {string} adaptorSignature - adaptor signature hex.
+ * @property {string} signature - signature hex.
+ * @property {string} encryptionKey - adaptor encryption key
+ */
+export interface RecoverEcdsaAdaptorRequest {
+    adaptorSignature: string;
+    signature: string;
+    encryptionKey: string;
+}
+
+/**
  * @property {string} txid - utxo txid
  * @property {number} vout - utxo vout
  * @property {bigint | number} amount - asset amount
@@ -2865,6 +2947,16 @@ export interface SerializeLedgerFormatTxOut {
 }
 
 /**
+ * Request for custom prefix setting.
+ * @property {AddressPrefixCustomizeData[]} addressJsonDatas? - address prefix customize data.
+ * @property {KeyPrefixCustomizeData[]} keyJsonDatas? - key prefix customize data.
+ */
+export interface SetCustomPrefixRequest {
+    addressJsonDatas?: AddressPrefixCustomizeData[];
+    keyJsonDatas?: KeyPrefixCustomizeData[];
+}
+
+/**
  * request for set psbt record
  * @property {string} psbt - psbt data (hex or base64)
  * @property {PsbtRecordData[]} records - psbt record data.
@@ -2959,27 +3051,25 @@ export interface SignData {
 }
 
 /**
- * Request for sign on ecdsa adaptor
- * @property {string} message - message data. (32-byte hash, or text message.)
- * @property {boolean} isHashed? - is 32-byte hashed message.
- * @property {string} privkey - private key.
- * @property {string} adaptor - adaptor public key.
+ * Request for sign message.
+ * @property {string} privkey - private key. set is wif or hex.
+ * @property {string} message - message
+ * @property {string} magic? - message magic word. default is empty (set bitcoin magic word.)
  */
-export interface SignEcdsaAdaptorRequest {
-    message: string;
-    isHashed?: boolean;
+export interface SignMessageRequest {
     privkey: string;
-    adaptor: string;
+    message: string;
+    magic?: string;
 }
 
 /**
- * Response of sign on ecdsa adaptor
- * @property {string} adaptorSignature - adaptor signature hex.
- * @property {string} proof - adaptor proof.
+ * Response of signed message.
+ * @property {string} signature - signature
+ * @property {string} base64 - base64 encoded signature
  */
-export interface SignEcdsaAdaptorResponse {
-    adaptorSignature: string;
-    proof: string;
+export interface SignMessageResponse {
+    signature: string;
+    base64: string;
 }
 
 /**
@@ -2999,12 +3089,14 @@ export interface SignPsbtRequest {
  * @property {boolean} isElements? - elements transaction flag.
  * @property {string} tx - transaction hex
  * @property {UtxoObject[]} utxos? - UTXO data.
+ * @property {string} genesisBlockHash? - genesis block hash (for elements taproot)
  */
 export interface SignWithPrivkeyRequest {
     isElements?: boolean;
     tx: string;
     txin?: SignWithPrivkeyTxInRequest;
     utxos?: UtxoObject[];
+    genesisBlockHash?: string;
 }
 
 /**
@@ -3447,19 +3539,43 @@ export interface UtxoObject {
 /**
  * Request for verify signature
  * @property {string} adaptorSignature - adaptor signature hex.
- * @property {string} proof - adaptor proof.
- * @property {string} adaptor - adaptor public key.
+ * @property {string} encryptionKey - adaptor encryption key.
  * @property {string} message - message data. (32-byte hash, or text message.)
  * @property {boolean} isHashed? - is 32-byte hashed message.
  * @property {string} pubkey - public key.
  */
 export interface VerifyEcdsaAdaptorRequest {
     adaptorSignature: string;
-    proof: string;
-    adaptor: string;
+    encryptionKey: string;
     message: string;
     isHashed?: boolean;
     pubkey: string;
+}
+
+/**
+ * Request for verify message.
+ * @property {string} signature - message signature. hex or base64.
+ * @property {string} pubkey - public key.
+ * @property {string} message - message
+ * @property {string} magic? - message magic word. default is empty (set bitcoin magic word.)
+ * @property {boolean} ignoreError? - ignore error option. If set to true, response success is true/false.
+ */
+export interface VerifyMessageRequest {
+    signature: string;
+    pubkey: string;
+    message: string;
+    magic?: string;
+    ignoreError?: boolean;
+}
+
+/**
+ * Response of verify message.
+ * @property {boolean} success - signature
+ * @property {string} pubkey? - recovered public key
+ */
+export interface VerifyMessageResponse {
+    success: boolean;
+    pubkey?: string;
 }
 
 /**
@@ -3478,12 +3594,14 @@ export interface VerifyPsbtSignRequest {
  * @property {boolean} isElements? - elements transaction flag.
  * @property {VerifySignatureTxInRequest} txin - txin data
  * @property {UtxoObject[]} utxos? - UTXO data.
+ * @property {string} genesisBlockHash? - genesis block hash (for elements taproot)
  */
 export interface VerifySignatureRequest {
     tx: string;
     isElements?: boolean;
     txin: VerifySignatureTxInRequest;
     utxos?: UtxoObject[];
+    genesisBlockHash?: string;
 }
 
 /** @property {boolean} success - verify result (true only. If it fails, an error is thrown.) */
@@ -3527,11 +3645,15 @@ export interface VerifySignatureTxInRequest {
  * @property {string} tx - transaction hex
  * @property {boolean} isElements? - elements transaction flag.
  * @property {VerifySignTxInUtxoData[]} txins - target txin list
+ * @property {UtxoObject[]} utxos? - UTXO data.
+ * @property {string} genesisBlockHash? - genesis block hash (for elements taproot)
  */
 export interface VerifySignRequest {
     tx: string;
     isElements?: boolean;
     txins: VerifySignTxInUtxoData[];
+    utxos?: UtxoObject[];
+    genesisBlockHash?: string;
 }
 
 /**
@@ -3561,6 +3683,14 @@ export interface VerifySignTxInUtxoData {
     descriptor?: string;
     lockingScript?: string;
     confidentialValueCommitment?: string;
+}
+
+/**
+ * Request for void function.
+ * @property {boolean} success - success flag
+ */
+export interface VoidFunctionResponse {
+    success: boolean;
 }
 
 /**
@@ -3595,12 +3725,6 @@ export interface XpubData {
 
 /** function definition class. */
 export class Cfdjs {
-    /**
-     * Adapt signature on ecdsa adaptor.
-     * @param {AdaptEcdsaAdaptorRequest} jsonObject - request data.
-     * @return {Promise<SignatureDataResponse>} - response data.
-     */
-    AdaptEcdsaAdaptor(jsonObject: AdaptEcdsaAdaptorRequest): Promise<SignatureDataResponse>;
     /**
      * Add multisig signatures to the transaction.
      * @param {AddMultisigSignRequest} jsonObject - request data.
@@ -3679,6 +3803,11 @@ export class Cfdjs {
      * @return {Promise<VerifySignatureResponse>} - response data.
      */
     CheckTweakedSchnorrPubkey(jsonObject: CheckTweakedSchnorrPubkeyRequest): Promise<VerifySignatureResponse>;
+    /**
+     * Clear custom prefix function.
+     * @return {Promise<VoidFunctionResponse>} - response data.
+     */
+    ClearCustomPrefix(): Promise<VoidFunctionResponse>;
     /**
      * Combine psbt.
      * @param {PsbtList} jsonObject - request data.
@@ -3877,6 +4006,12 @@ export class Cfdjs {
      */
     DecodeRawTransaction(jsonObject: DecodeRawTransactionRequest): Promise<DecodeRawTransactionResponse>;
     /**
+     * Decrypt signature on ecdsa adaptor.
+     * @param {DecryptEcdsaAdaptorRequest} jsonObject - request data.
+     * @return {Promise<SignatureDataResponse>} - response data.
+     */
+    DecryptEcdsaAdaptor(jsonObject: DecryptEcdsaAdaptorRequest): Promise<SignatureDataResponse>;
+    /**
      * Add raw transaction.
      * @param {ElementsAddRawTransactionRequest} jsonObject - request data.
      * @return {Promise<ElementsAddRawTransactionResponse>} - response data.
@@ -3913,17 +4048,17 @@ export class Cfdjs {
      */
     EncodeSignatureByDer(jsonObject: EncodeSignatureByDerRequest): Promise<EncodeSignatureByDerResponse>;
     /**
+     * sign on ecdsa adaptor.
+     * @param {EncryptEcdsaAdaptorRequest} jsonObject - request data.
+     * @return {Promise<EcdsaAdaptorSignature>} - response data.
+     */
+    EncryptEcdsaAdaptor(jsonObject: EncryptEcdsaAdaptorRequest): Promise<EcdsaAdaptorSignature>;
+    /**
      * Estimate fee.
      * @param {EstimateFeeRequest} jsonObject - request data.
      * @return {Promise<EstimateFeeResponse>} - response data.
      */
     EstimateFee(jsonObject: EstimateFeeRequest): Promise<EstimateFeeResponse>;
-    /**
-     * Extract secret data on ecdsa adaptor.
-     * @param {ExtractSecretEcdsaAdaptorRequest} jsonObject - request data.
-     * @return {Promise<SecretData>} - response data.
-     */
-    ExtractSecretEcdsaAdaptor(jsonObject: ExtractSecretEcdsaAdaptorRequest): Promise<SecretData>;
     /**
      * Finalize and extract PSBT.
      * @param {FinalizePsbtRequest} jsonObject - request data.
@@ -4176,6 +4311,12 @@ export class Cfdjs {
      */
     ParseScript(jsonObject: ParseScriptRequest): Promise<ParseScriptResponse>;
     /**
+     * Recover secret data on ecdsa adaptor.
+     * @param {RecoverEcdsaAdaptorRequest} jsonObject - request data.
+     * @return {Promise<SecretData>} - response data.
+     */
+    RecoverEcdsaAdaptor(jsonObject: RecoverEcdsaAdaptorRequest): Promise<SecretData>;
+    /**
      * Create a Schnorr signature for a given message
      * @param {SchnorrSignRequest} jsonObject - request data.
      * @return {Promise<SchnorrSignResponse>} - response data.
@@ -4199,6 +4340,12 @@ export class Cfdjs {
      * @return {Promise<SerializeLedgerFormatResponse>} - response data.
      */
     SerializeLedgerFormat(jsonObject: SerializeLedgerFormatRequest): Promise<SerializeLedgerFormatResponse>;
+    /**
+     * set customize prefix.
+     * @param {SetCustomPrefixRequest} jsonObject - request data.
+     * @return {Promise<VoidFunctionResponse>} - response data.
+     */
+    SetCustomPrefix(jsonObject: SetCustomPrefixRequest): Promise<VoidFunctionResponse>;
     /**
      * Set psbt data.
      * @param {SetPsbtRequest} jsonObject - request data.
@@ -4224,11 +4371,11 @@ export class Cfdjs {
      */
     SetRawReissueAsset(jsonObject: SetRawReissueAssetRequest): Promise<SetRawReissueAssetResponse>;
     /**
-     * sign on ecdsa adaptor.
-     * @param {SignEcdsaAdaptorRequest} jsonObject - request data.
-     * @return {Promise<SignEcdsaAdaptorResponse>} - response data.
+     * Sign bitcoin message.
+     * @param {SignMessageRequest} jsonObject - request data.
+     * @return {Promise<SignMessageResponse>} - response data.
      */
-    SignEcdsaAdaptor(jsonObject: SignEcdsaAdaptorRequest): Promise<SignEcdsaAdaptorResponse>;
+    SignMessage(jsonObject: SignMessageRequest): Promise<SignMessageResponse>;
     /**
      * Sign psbt with privkey.
      * @param {SignPsbtRequest} jsonObject - request data.
@@ -4319,6 +4466,12 @@ export class Cfdjs {
      * @return {Promise<VerifySignatureResponse>} - response data.
      */
     VerifyEcdsaAdaptor(jsonObject: VerifyEcdsaAdaptorRequest): Promise<VerifySignatureResponse>;
+    /**
+     * Verify bitcoin message.
+     * @param {VerifyMessageRequest} jsonObject - request data.
+     * @return {Promise<VerifyMessageResponse>} - response data.
+     */
+    VerifyMessage(jsonObject: VerifyMessageRequest): Promise<VerifyMessageResponse>;
     /**
      * Verify the sign of psbt.
      * @param {VerifyPsbtSignRequest} jsonObject - request data.

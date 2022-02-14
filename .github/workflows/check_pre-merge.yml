@@ -18,14 +18,14 @@ jobs:
   wasm-test:
     name: wasm test
     timeout-minutes: 30
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
         node: [12, 14, 16]
 
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/setup-node@v2.1.2
+    - uses: actions/setup-node@v2
       timeout-minutes: 1
       with:
         node-version: ${{ matrix.node }}
@@ -78,7 +78,7 @@ jobs:
 
   doxygen-ubuntu:
     name: doxygen-ubuntu
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
 
     steps:
     - uses: actions/checkout@v2

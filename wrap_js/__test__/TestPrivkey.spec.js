@@ -49,6 +49,10 @@ const createTestFunc = (helper) => {
       resp = await helper.getResponse(resp);
       resp = {...req, ...resp};
       break;
+    case 'Privkey.SignMessage':
+      resp = cfd.SignMessage(req);
+      resp = await helper.getResponse(resp);
+      break;
     default:
       throw new Error('unknown name: ' + testName);
     }
@@ -69,6 +73,8 @@ const createCheckFunc = (helper) => {
     if (exp.network) expect(resp.network).toEqual(exp.network);
     if (exp.isCompressed) expect(resp.isCompressed).toEqual(exp.isCompressed);
     if (exp.signature) expect(resp.signature).toEqual(exp.signature);
+    if (exp.pubkey) expect(resp.pubkey).toEqual(exp.pubkey);
+    if (exp.base64) expect(resp.base64).toEqual(exp.base64);
   };
 };
 

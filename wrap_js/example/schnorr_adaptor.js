@@ -8,10 +8,10 @@ const {
   SchnorrSign,
   SchnorrVerify,
   ComputeSigPointSchnorrPubkey,
-  SignEcdsaAdaptor,
+  EncryptEcdsaAdaptor,
   VerifyEcdsaAdaptor,
-  AdaptEcdsaAdaptor,
-  ExtractSecretEcdsaAdaptor,
+  DecryptEcdsaAdaptor,
+  RecoverEcdsaAdaptor,
 } = Helper.getCfdjs();
 
 const PRIVKEY = '688c77bc2d5aaff5491cf309d4753b732135470d05b7b2cd21add0744fe97bef';
@@ -76,35 +76,35 @@ const example = async function() {
 
   console.log('\n===== EcdsaAdaptor =====');
 
-  const adaptorSignature = await GetResponse(SignEcdsaAdaptor({
+  const adaptorSignature = await GetResponse(EncryptEcdsaAdaptor({
     message: MESSAGE,
     isHashed: true,
     privkey: PRIVKEY,
-    adaptor: ADAPTOR,
+    encryptionKey: ADAPTOR,
   }));
-  console.log(`\n*** Sign EcdsaAdaptor ***\n`, adaptorSignature);
+  console.log(`\n*** Encrypt EcdsaAdaptor ***\n`, adaptorSignature);
 
   const validAdaptor = await GetResponse(VerifyEcdsaAdaptor({
     ...adaptorSignature,
     message: MESSAGE,
     isHashed: true,
-    adaptor: ADAPTOR,
+    encryptionKey: ADAPTOR,
     pubkey: pubkey.pubkey,
   }));
   console.log(`\n*** Verify EcdsaAdaptor ***\n`, validAdaptor);
 
-  const signature = await GetResponse(AdaptEcdsaAdaptor({
+  const signature = await GetResponse(DecryptEcdsaAdaptor({
     ...adaptorSignature,
     secret: SECRET,
   }));
-  console.log(`\n*** Adapt EcdsaAdaptor ***\n`, signature);
+  console.log(`\n*** Decrypt EcdsaAdaptor ***\n`, signature);
 
-  const secretData = await GetResponse(ExtractSecretEcdsaAdaptor({
+  const secretData = await GetResponse(RecoverEcdsaAdaptor({
     ...adaptorSignature,
-    adaptor: ADAPTOR,
+    encryptionKey: ADAPTOR,
     signature: signature.signature,
   }));
-  console.log(`\n*** Extract secret ***\n`, secretData);
+  console.log(`\n*** Recover EcdsaAdaptor ***\n`, secretData);
 };
 
 module.exports = example;

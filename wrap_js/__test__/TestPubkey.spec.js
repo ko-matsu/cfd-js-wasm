@@ -52,6 +52,10 @@ const createTestFunc = (helper) => {
       resp = await helper.getResponse(resp);
       resp = {...resp, hex: resp.pubkey};
       break;
+    case 'Pubkey.VerifyMessage':
+      resp = cfd.VerifyMessage(req);
+      resp = await helper.getResponse(resp);
+      break;
     default:
       throw new Error('unknown name: ' + testName);
     }
@@ -68,6 +72,8 @@ const createCheckFunc = (helper) => {
       return;
     }
     if (exp.hex) expect(resp.hex).toEqual(exp.hex);
+    if (exp.pubkey) expect(resp.pubkey).toEqual(exp.pubkey);
+    if ('success' in exp) expect(resp.success).toEqual(exp.success);
   };
 };
 
