@@ -6,8 +6,8 @@ const createTestFunc = (helper) => {
     let resp;
     let request = req;
     switch (testName) {
-    case 'EcdsaAdaptor.Sign':
-      resp = cfd.SignEcdsaAdaptor(req);
+    case 'EcdsaAdaptor.Encrypt':
+      resp = cfd.EncryptEcdsaAdaptor(req);
       resp = await helper.getResponse(resp);
       resp = {...resp, signature: resp.adaptorSignature};
       break;
@@ -17,13 +17,13 @@ const createTestFunc = (helper) => {
       resp = await helper.getResponse(resp);
       resp = {valid: resp.success};
       break;
-    case 'EcdsaAdaptor.Adapt':
+    case 'EcdsaAdaptor.Decrypt':
       request = {...req, adaptorSignature: req.signature};
-      resp = cfd.AdaptEcdsaAdaptor(request);
+      resp = cfd.DecryptEcdsaAdaptor(request);
       resp = await helper.getResponse(resp);
       break;
-    case 'EcdsaAdaptor.ExtractSecret':
-      resp = cfd.ExtractSecretEcdsaAdaptor(req);
+    case 'EcdsaAdaptor.Recover':
+      resp = cfd.RecoverEcdsaAdaptor(req);
       resp = await helper.getResponse(resp);
       break;
     default:
@@ -42,7 +42,6 @@ const createCheckFunc = (helper) => {
       return;
     }
     if (exp.signature) expect(resp.signature).toEqual(exp.signature);
-    if (exp.proof) expect(resp.proof).toEqual(exp.proof);
     if (exp.valid) expect(resp.valid).toEqual(exp.valid);
     if (exp.secret) expect(resp.secret).toEqual(exp.secret);
   };

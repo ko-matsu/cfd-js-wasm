@@ -4,12 +4,18 @@ const updateField = async function(event) {
   const controlBlock = document.getElementById("control").value;
   const networkObj = document.getElementById("network");
   const selectedNetworkIdx = networkObj.selectedIndex;
-  let networkValue = networkObj.options[selectedNetworkIdx].value;
-  let network = networkValue;
+  let network = networkObj.options[selectedNetworkIdx].value;
+  let isElements = true;
+  if ((network === 'mainnet') || (network === 'testnet') || (network === 'regtest')) {
+    isElements = false;
+  } else if (network === 'elementsregtest') {
+    network = 'regtest';
+  }
 
   try {
     const req = {
       network,
+      isElements,
       tapscript,
       controlBlock,
     };

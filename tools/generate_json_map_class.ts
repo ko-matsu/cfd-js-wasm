@@ -1323,13 +1323,13 @@ function generateReferenceClassList(
               const dst = refList.get(ref);
               if (dst) {
                 if (dst.weight >= src.weight) { // update ref weight
-                src.weight = dst.weight + 1;
-                changeWeight = true;
-                targetCount += 1;
+                  src.weight = dst.weight + 1;
+                  changeWeight = true;
+                  targetCount += 1;
                   // console.log(`update weight: ${key} weight=${src.weight}`);
+                }
               }
             }
-          }
           }
           if (targetCount > 0) {
             refList.set(key, src);

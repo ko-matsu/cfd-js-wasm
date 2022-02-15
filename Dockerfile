@@ -1,4 +1,4 @@
-FROM ghcr.io/cryptogarageinc/elements-testing:v0.1.0 as cfd_wasm_base
+FROM ghcr.io/cryptogarageinc/elements-testing:v0.1.1 as cfd_wasm_base
 
 ARG EMSDK_VERSION=2.0.12
 ARG NODE_VERSION=14.15.5
