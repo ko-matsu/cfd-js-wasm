@@ -7,21 +7,23 @@ const updateField = async function(event) {
   let network = networkValue;
 
   try {
-    let mainchainNetwork = 'regtest';
-    network = 'regtest';
-    if ((networkValue === 'mainnet') || (networkValue === 'liquidv1')) {
-      network = 'liquidv1';
-      mainchainNetwork = 'mainnet';
+    if ((networkValue === 'liquidv1') || (networkValue === 'elementsregtest')) {
+      let mainchainNetwork = 'regtest';
+      network = 'regtest';
+      if ((networkValue === 'mainnet') || (networkValue === 'liquidv1')) {
+        network = 'liquidv1';
+        mainchainNetwork = 'mainnet';
+      }
+      const req = {
+        hex: inputTx.value,
+        network,
+        mainchainNetwork,
+      };
+      const resp = await callJsonApi(Module, 'ElementsDecodeRawTransaction', req);
+      decodedtx.value = JSON.stringify(resp, (key, value) =>
+              typeof value === 'bigint' ? value.toString() : value, '  ');
+      return;
     }
-    const req = {
-      hex: inputTx.value,
-      network,
-      mainchainNetwork,
-    };
-    const resp = await callJsonApi(Module, 'ElementsDecodeRawTransaction', req);
-    decodedtx.value = JSON.stringify(resp, (key, value) =>
-            typeof value === 'bigint' ? value.toString() : value, '  ');
-    return;
   } catch (e) {
   }
 
