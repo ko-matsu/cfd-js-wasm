@@ -7,6 +7,7 @@ on:
     - develop
     - features/sprint*
     - stable_v*
+    - test_ci
   pull_request:
     branches:
     - master
@@ -21,11 +22,16 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        node: [12, 14, 16]
+        node: [12, 14, 16, 18, 19]
+        include:
+          - node: 18
+            addopt: 'true'
+          - node: 19
+            addopt: 'true'
 
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v2
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
       timeout-minutes: 1
       with:
         node-version: ${{ matrix.node }}
@@ -37,7 +43,7 @@ jobs:
         echo "node_version=$node_ver"
       shell: bash
     - name: node_modules-useCache
-      uses: actions/cache@v1
+      uses: actions/cache@v3
       id: node_cache
       with:
         path: node_modules
@@ -51,7 +57,7 @@ jobs:
         echo "::set-output name=npm_cachedir::$(npm config get cache)"
     - name: use npm cache
       if: steps.node_cache.outputs.cache-hit != 'true'
-      uses: actions/cache@v1
+      uses: actions/cache@v3
       id: npm_cache
       with:
         path: ${{ steps.npm_info.outputs.npm_cachedir }}
@@ -68,11 +74,21 @@ jobs:
     - name: test
       run: npm run test
     - name: example
+      if: matrix.addopt != 'true'
       run: |
         npm run example
         npm run elements_example
+    - name: example for nodejs 18 or higher
+      if: matrix.addopt == 'true'
+      run: |
+        NODE_OPTIONS="--no-experimental-fetch" npm run example
+        NODE_OPTIONS="--no-experimental-fetch" npm run elements_example
     - name: ts example
+      if: matrix.addopt != 'true'
       run: npm run ts_example
+    - name: ts example for nodejs 18 or higher
+      if: matrix.addopt == 'true'
+      run: NODE_OPTIONS="--no-experimental-fetch" npm run ts_example
     - name: lint_check
       run: npm run lint_all
 
@@ -81,7 +97,7 @@ jobs:
     runs-on: ubuntu-20.04
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: install_doxygen
       run: sudo apt install doxygen graphviz
     - name: doxygen_check

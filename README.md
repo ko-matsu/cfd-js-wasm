@@ -220,3 +220,8 @@ set CFD_CMAKE_GIT_SKIP_UPDATE=1
 ```
 export CFD_CMAKE_GIT_SKIP_UPDATE=1
 ```
+
+### When using node.js 18 or higher
+
+In node.js 18 or later, emscripten for cfd-js-wasm may not work correctly.
+In that case, you need to run it with the '--no-experimental-fetch' option.
