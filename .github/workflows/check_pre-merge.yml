@@ -72,7 +72,11 @@ jobs:
         npm set progress=false
         npm ci
     - name: test
+      if: matrix.addopt != 'true'
       run: npm run test
+    - name: test for nodejs 18 or higher
+      if: matrix.addopt == 'true'
+      run: NODE_OPTIONS="--no-experimental-fetch" npm run test
     - name: example
       if: matrix.addopt != 'true'
       run: |
