@@ -89,7 +89,7 @@ If you use old npm or yarn, describe as follows:
   - can compile c++11
 - CMake (3.14.3 or higher)
 - Python (3.8 or higher)
-- node.js (12.8 or higher)
+- node.js (16.5 or higher)
 - emscripten (1.39.10 or higher)
 
 ### Build
