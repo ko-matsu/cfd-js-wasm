@@ -14,18 +14,25 @@ services:
     volumes:
       - /private/work
       - .:/private/cfd-js-wasm
+      - wasmbuild-ccache-data:/home/testuser/.cache/ccache
+    user: root
     entrypoint: /private/cfd-js-wasm/tools/build_for_release.sh
 
   wasm-test:
-    image: ghcr.io/cryptogarageinc/elements-testing:v0.2.3
+    image: ghcr.io/cryptogarageinc/elements-testing:v0.2.5
     volumes:
       - ./:/workspace
     working_dir: /workspace
+    user: testuser
     command: /bin/bash -c "npm install && NODE_OPTIONS=--no-experimental-fetch npm run test_example"
 
   wasm-update-package-lock:
-    image: ghcr.io/cryptogarageinc/elements-testing:v0.2.3
+    image: ghcr.io/cryptogarageinc/elements-testing:v0.2.5
     volumes:
       - ./:/workspace
     working_dir: /workspace
+    user: testuser
     command: /bin/bash -c "./tools/update_package.sh"
+
+volumes:
+  wasmbuild-ccache-data:

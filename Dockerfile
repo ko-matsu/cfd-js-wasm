@@ -1,9 +1,10 @@
-FROM ghcr.io/cryptogarageinc/elements-testing:v0.1.1 as cfd_wasm_base
+FROM ghcr.io/cryptogarageinc/elements-testing:v0.2.5 as cfd_wasm_base
 
 ARG EMSDK_VERSION=2.0.12
-ARG NODE_VERSION=14.15.5
+ARG NODE_VERSION=14.18.2
 
 # install tzdata before git
+USER root
 RUN apt-get update && apt-get install -y tzdata
 ENV TZ=Asia/Tokyo
 
@@ -11,6 +12,7 @@ RUN apt-get update && apt-get install -y \
     csh \
     clang \
     clang-format \
+    ccache \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
@@ -40,4 +42,5 @@ RUN chmod 755 /emscripten/emsdk/emsdk_env.sh && \
 
 # RUN /emscripten/emsdk/emsdk_env.sh
 
-ENTRYPOINT ["/bin/bash", "-l", "-c"]
+USER testuser
+CMD ["bash"]
