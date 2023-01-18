@@ -2817,14 +2817,6 @@ export interface SchnorrSignResponse {
     hex: string;
 }
 
-/** Request for creating a Schnorr signature. */
-export interface SchnorrVerifyRequest {
-    pubkey: string;
-    message: string;
-    isHashed?: boolean;
-    signature: string;
-}
-
 /**
  * Contains the validation result
  * @property {boolean} valid - whether the signature is valid.
@@ -3604,7 +3596,10 @@ export interface VerifySignatureRequest {
     genesisBlockHash?: string;
 }
 
-/** @property {boolean} success - verify result (true only. If it fails, an error is thrown.) */
+/**
+ * Contains the validation result
+ * @property {boolean} success - verify result (true only. If it fails, an error is thrown.)
+ */
 export interface VerifySignatureResponse {
     success: boolean;
 }
@@ -3638,6 +3633,17 @@ export interface VerifySignatureTxInRequest {
     confidentialValueCommitment?: string;
     annex?: string;
     codeSeparatorPosition?: bigint | number;
+}
+
+/**
+ * Request for verify signature.
+ * @property {string} pubkey - public key (ecdsa or x-only schnorr)
+ */
+export interface VerifySignatureWithPubkeyRequest {
+    pubkey: string;
+    message: string;
+    isHashed?: boolean;
+    signature: string;
 }
 
 /**
@@ -4324,10 +4330,10 @@ export class Cfdjs {
     SchnorrSign(jsonObject: SchnorrSignRequest): Promise<SchnorrSignResponse>;
     /**
      * Verify a Schnorr signature for a given message
-     * @param {SchnorrVerifyRequest} jsonObject - request data.
+     * @param {VerifySignatureWithPubkeyRequest} jsonObject - request data.
      * @return {Promise<SchnorrVerifyResponse>} - response data.
      */
-    SchnorrVerify(jsonObject: SchnorrVerifyRequest): Promise<SchnorrVerifyResponse>;
+    SchnorrVerify(jsonObject: VerifySignatureWithPubkeyRequest): Promise<SchnorrVerifyResponse>;
     /**
      * Select coins.
      * @param {SelectUtxosRequest} jsonObject - request data.
@@ -4490,6 +4496,12 @@ export class Cfdjs {
      * @return {Promise<VerifySignatureResponse>} - response data.
      */
     VerifySignature(jsonObject: VerifySignatureRequest): Promise<VerifySignatureResponse>;
+    /**
+     * Verify signature with pubkey.
+     * @param {VerifySignatureWithPubkeyRequest} jsonObject - request data.
+     * @return {Promise<VerifySignatureResponse>} - response data.
+     */
+    VerifySignatureWithPubkey(jsonObject: VerifySignatureWithPubkeyRequest): Promise<VerifySignatureResponse>;
 }
 
 /**

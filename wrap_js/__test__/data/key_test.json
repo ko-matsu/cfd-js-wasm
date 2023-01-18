@@ -815,10 +815,7 @@
                 },
                 "expect": {
                     "bool": true
-                },
-                "exclude": [
-                    "json"
-                ]
+                }
             },
             {
                 "case": "verify fail",
@@ -829,10 +826,7 @@
                 },
                 "expect": {
                     "bool": false
-                },
-                "exclude": [
-                    "json"
-                ]
+                }
             },
             {
                 "case": "invalid signature data",
@@ -843,12 +837,9 @@
                 },
                 "error": {
                     "capi": "hex to byte convert error.",
-                    "json": "",
+                    "json": "hex to byte convert error.",
                     "python": "Error: Invalid hex value."
-                },
-                "exclude": [
-                    "json"
-                ]
+                }
             }
         ]
     },

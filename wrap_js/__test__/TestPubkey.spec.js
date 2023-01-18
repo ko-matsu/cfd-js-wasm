@@ -52,6 +52,17 @@ const createTestFunc = (helper) => {
       resp = await helper.getResponse(resp);
       resp = {...resp, hex: resp.pubkey};
       break;
+    case 'Pubkey.VerifyEcSignature':
+      request = {
+        ...req,
+        pubkey: req.hex,
+        isHashed: true,
+        message: req.sighash,
+      };
+      resp = cfd.VerifySignatureWithPubkey(request);
+      resp = await helper.getResponse(resp);
+      resp = {bool: resp.success};
+      break;
     case 'Pubkey.VerifyMessage':
       resp = cfd.VerifyMessage(req);
       resp = await helper.getResponse(resp);
@@ -74,6 +85,7 @@ const createCheckFunc = (helper) => {
     if (exp.hex) expect(resp.hex).toEqual(exp.hex);
     if (exp.pubkey) expect(resp.pubkey).toEqual(exp.pubkey);
     if ('success' in exp) expect(resp.success).toEqual(exp.success);
+    if ('bool' in exp) expect(resp.bool).toEqual(exp.bool);
   };
 };
 
