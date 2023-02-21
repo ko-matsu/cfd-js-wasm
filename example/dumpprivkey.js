@@ -55,6 +55,9 @@ const updateField = async function(event) {
     const resp = await callJsonApi(Module, 'GetPubkeyFromPrivkey', req);
     privkeyInfo['pubkey'] = resp.pubkey;
 
+    const uncompResp = await callJsonApi(Module, 'GetUncompressedPubkey', {pubkey: resp.pubkey});
+    privkeyInfo['uncompressedPubkey'] = uncompResp.pubkey;
+
     const schnorrResp = await callJsonApi(Module, 'GetSchnorrPubkeyFromPrivkey', req);
     privkeyInfo['schnorrPubkey'] = schnorrResp;
 

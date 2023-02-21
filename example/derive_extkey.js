@@ -4,16 +4,19 @@ const updateField = async function(event) {
   const childNum = document.getElementById("child_num").value;
   const decoded = document.getElementById("decoded");
 
-  let pubkey = '';
   let deriveKey = '';
   let extPubkey = '';
   const extkey = inputData.value.trim();
   let path = bip32path.value.trim();
   let network = 'testnet';
-  if (extkey.startsWith('xpub') || extkey.startsWith('xprv')) {
-    network = 'mainnet';
+  switch (extkey.charAt(0)) {
+    case 'x':
+    case 'y':  // bip49
+    case 'z':  // bip84
+      network = 'mainnet';
+      break;
   }
-  const isPriv = (extkey.startsWith('xprv') || extkey.startsWith('tprv'));
+  const isPriv = (extkey.substr(1, 3) === 'prv');
   const data = {};
 
   try {

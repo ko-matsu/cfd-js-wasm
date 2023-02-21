@@ -6,8 +6,12 @@ const updateField = async function(event) {
   let privkey = '';
   let extpubkey = '';
   let network = 'testnet';
-  if (inputData.value.startsWith('xpub') || inputData.value.startsWith('xprv')) {
-    network = 'mainnet';
+  switch (inputData.value.charAt(0)) {
+    case 'x':
+    case 'y':  // bip49
+    case 'z':  // bip84
+      network = 'mainnet';
+      break;
   }
   try {
     const req = {
@@ -19,7 +23,7 @@ const updateField = async function(event) {
   } catch (e) {
   }
 
-  if (inputData.value.startsWith('xprv') || inputData.value.startsWith('tprv')) {
+  if (inputData.value.substr(1, 3) === 'prv') {
     try {
       const req = {
         extkey: inputData.value,
@@ -54,7 +58,7 @@ const updateField = async function(event) {
     };
     const resp = await callJsonApi(Module, 'GetExtkeyInfo', req);
     if (privkey) resp['privkey'] = privkey;
-    if (extpubkey) resp['xpub'] = extpubkey;
+    if (extpubkey) resp['extpub'] = extpubkey;
     if (pubkey) {
       resp['pubkey'] = pubkey;
       const scReq = {
