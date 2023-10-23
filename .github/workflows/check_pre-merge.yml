@@ -22,13 +22,15 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        node: [16, 18, 19, 20]
+        node: [16, 18, 20, 21]
         include:
           - node: 18
             addopt: 'true'
           - node: 19
             addopt: 'true'
           - node: 20
+            addopt: 'true'
+          - node: 21
             addopt: 'true'
 
     steps:
