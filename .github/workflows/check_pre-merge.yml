@@ -19,23 +19,19 @@ jobs:
   wasm-test:
     name: wasm test
     timeout-minutes: 30
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
-        node: [16, 18, 20, 21]
+        node: [20, 22]
         include:
-          - node: 18
-            addopt: 'true'
-          - node: 19
-            addopt: 'true'
           - node: 20
             addopt: 'true'
-          - node: 21
+          - node: 22
             addopt: 'true'
 
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-node@v3
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
       timeout-minutes: 1
       with:
         node-version: ${{ matrix.node }}
@@ -102,10 +98,10 @@ jobs:
 
   doxygen-ubuntu:
     name: doxygen-ubuntu
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: install_doxygen
       run: sudo apt install doxygen graphviz
     - name: doxygen_check
